@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <a href="index.html" class="hover:underline">Home</a>
       <a href="book.html" class="hover:underline">Books</a>
       <a href="book-management.html" class="hover:underline">Book Management</a>
+      <a href="orders.html" class="hover:underline">Orders</a>
     </nav>
   `;
 

@@ -1,66 +1,121 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thanh toán | Bookstore</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 text-gray-800 font-sans">
-  <div class="max-w-4xl mx-auto p-6 bg-white mt-8 rounded shadow">
-    <h1 class="text-3xl font-bold mb-6">Xác nhận đơn hàng</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thanh toán | Bookstore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 text-gray-800 font-sans">
+    <div class="max-w-4xl mx-auto p-6 bg-white mt-8 rounded shadow">
+      <h1 class="text-3xl font-bold mb-6">Xác nhận đơn hàng</h1>
 
-    <!-- Danh sách sách -->
-    <div id="checkout-items" class="space-y-4 mb-6"></div>
+      <!-- Danh sách sách -->
+      <div id="checkout-items" class="space-y-4 mb-6"></div>
 
-    <!-- Tổng tiền -->
-    <div class="text-right text-xl font-semibold mb-6">
-      Tổng cộng: <span id="total-amount">0đ</span>
-    </div>
+      <!-- Tổng tiền -->
+      <div class="text-right text-xl font-semibold mb-6">
+        Tổng cộng: <span id="total-amount">0đ</span>
+      </div>
 
-    <!-- Thông tin người nhận -->
-    <div class="mb-6 space-y-4">
-      <input type="text" id="customer-name" placeholder="Họ tên người nhận" class="w-full border px-4 py-2 rounded" required />
-      <input type="text" id="customer-phone" placeholder="Số điện thoại" class="w-full border px-4 py-2 rounded" required />
-      <input type="text" id="customer-address" placeholder="Địa chỉ giao hàng" class="w-full border px-4 py-2 rounded" required />
-    </div>
+      <!-- Thông tin người nhận -->
+      <div class="mb-6 space-y-4">
+        <input
+          type="text"
+          id="customer-name"
+          placeholder="Họ tên người nhận"
+          class="w-full border px-4 py-2 rounded"
+          required
+        />
+        <input
+          type="text"
+          id="customer-phone"
+          placeholder="Số điện thoại"
+          class="w-full border px-4 py-2 rounded"
+          required
+        />
+        <input
+          type="text"
+          id="customer-address"
+          placeholder="Địa chỉ giao hàng"
+          class="w-full border px-4 py-2 rounded"
+          required
+        />
+      </div>
 
-    <!-- Mã giảm giá -->
-    <div class="flex gap-4 mb-6">
-      <select id="discount-code" class="border px-4 py-2 rounded w-full">
-        <option value="">-- Chọn mã giảm giá --</option>
-        <option value="LOVEBOOK">LOVEBOOK - Giảm 15.000đ</option>
-        <option value="USAGI">USAGI - Giảm 15.000đ</option>
-        <option value="CHIIKAWA">CHIIKAWA - Giảm 15.000đ</option>
-        <option value="HACHIWARE">HACHIWARE - Giảm 15.000đ</option>
-      </select>
-      <button onclick="applyDiscount()" class="bg-black text-white px-4 py-2 rounded">Áp dụng</button>
-    </div>
+      <!-- Mã giảm giá -->
+      <div class="flex gap-4 mb-6">
+        <select id="discount-code" class="border px-4 py-2 rounded w-full">
+          <option value="">-- Chọn mã giảm giá --</option>
+          <option value="LOVEBOOK">LOVEBOOK - Giảm 15.000đ</option>
+          <option value="USAGI">USAGI - Giảm 15.000đ</option>
+          <option value="CHIIKAWA">CHIIKAWA - Giảm 15.000đ</option>
+          <option value="HACHIWARE">HACHIWARE - Giảm 15.000đ</option>
+        </select>
+        <button
+          onclick="applyDiscount()"
+          class="bg-black text-white px-4 py-2 rounded"
+        >
+          Áp dụng
+        </button>
+      </div>
 
-    <!-- Phương thức thanh toán -->
-    <div class="mb-6">
-      <label class="block mb-2 font-medium">Chọn phương thức thanh toán:</label>
-      <div class="space-y-2" id="payment-methods">
-        <label><input type="radio" name="payment" value="cod" checked /> Thanh toán khi nhận hàng</label><br>
-        <label><input type="radio" name="payment" value="credit" /> Thẻ tín dụng</label><br>
-        <label><input type="radio" name="payment" value="bank" /> Thẻ ngân hàng</label><br>
-        <label><input type="radio" name="payment" value="transfer" /> Chuyển khoản</label>
+      <!-- Phương thức thanh toán -->
+      <div class="mb-6">
+        <label class="block mb-2 font-medium"
+          >Chọn phương thức thanh toán:</label
+        >
+        <div class="space-y-2" id="payment-methods">
+          <label
+            ><input type="radio" name="payment" value="cod" checked /> Thanh
+            toán khi nhận hàng</label
+          ><br />
+          <label
+            ><input type="radio" name="payment" value="credit" /> Thẻ tín
+            dụng</label
+          ><br />
+          <label
+            ><input type="radio" name="payment" value="bank" /> Thẻ ngân
+            hàng</label
+          ><br />
+          <label
+            ><input type="radio" name="payment" value="transfer" /> Chuyển
+            khoản</label
+          >
+        </div>
+      </div>
+
+      <!-- Thông tin thanh toán bổ sung -->
+      <div id="payment-details" class="mb-6 hidden">
+        <!-- nội dung động -->
+      </div>
+
+      <!-- Nút xác nhận và quay lại-->
+      <div>
+        <span>
+          <button
+            onclick="goBack()"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded text-lg font-medium"
+          >
+            ⬅ Quay lại
+          </button>
+        </span>
+        <span class="float-right">
+          <button
+            onclick="submitOrder()"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded text-lg font-medium"
+          >
+            Đặt hàng
+          </button>
+        </span>
       </div>
     </div>
 
-    <!-- Thông tin thanh toán bổ sung -->
-    <div id="payment-details" class="mb-6 hidden">
-      <!-- nội dung động -->
-    </div>
-
-    <!-- Nút xác nhận -->
-    <div class="text-right">
-      <button onclick="submitOrder()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded text-lg font-medium">
-        Đặt hàng
-      </button>
-    </div>
-  </div>
-
-  <script src="checkout.js"></script>
-</body>
+    <script>
+      function goBack() {
+        window.history.back(); // Quay lại trang trước
+      }
+    </script>
+    <script src="checkout.js"></script>
+  </body>
 </html>
