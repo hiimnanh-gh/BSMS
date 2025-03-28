@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800 font-sans">
+  <script src="include-header.js"></script>
+
+  <main class="p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold">Book Management System</h1>
+      <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2">
+        <span>➕</span> Add Book
+      </button>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200">
+        <thead class="bg-gray-100 text-left">
+          <tr>
+            <th class="py-2 px-4">Title</th>
+            <th class="py-2 px-4">Author</th>
+            <th class="py-2 px-4">ISBN</th>
+            <th class="py-2 px-4">Published</th>
+            <th class="py-2 px-4">Genre</th>
+            <th class="py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="book-table-body" class="bg-white">
+          <!-- Sẽ render từ JS -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ADD BOOK MODAL -->
+  <div id="book-modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-xl relative">
+      <button onclick="closeAddModal()" class="absolute top-2 right-3 text-2xl text-gray-500 hover:text-gray-700">&times;</button>
+      <h2 class="text-xl font-semibold mb-4">Thêm sách</h2>
+      <form id="book-form" class="grid grid-cols-1 gap-4">
+        <input name="title" required class="border rounded px-3 py-2" placeholder="Tên sách" />
+        <input name="author" required class="border rounded px-3 py-2" placeholder="Tác giả" />
+        <input name="isbn" required class="border rounded px-3 py-2" placeholder="ISBN" />
+        <input name="published" required class="border rounded px-3 py-2" placeholder="Ngày xuất bản (dd/mm/yyyy)" />
+        <input name="genre" required class="border rounded px-3 py-2" placeholder="Thể loại" />
+        <textarea name="description" class="border rounded px-3 py-2" placeholder="Mô tả"></textarea>
+        <input name="image" type="file" accept="image/*" class="border rounded px-3 py-2" />
+        <button type="submit" class="bg-black text-white py-2 rounded hover:bg-gray-800">Lưu</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

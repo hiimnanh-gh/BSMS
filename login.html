@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Bookstore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+      <h2 class="text-2xl font-bold text-center mb-6">Đăng nhập</h2>
+      <form id="login-form" class="space-y-4">
+        <input
+          type="text"
+          name="username"
+          placeholder="Tên đăng nhập"
+          class="w-full border rounded px-4 py-2"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Mật khẩu"
+          class="w-full border rounded px-4 py-2"
+          required
+        />
+        <button
+          type="submit"
+          class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition"
+        >
+          Đăng nhập
+        </button>
+      </form>
+    </div>
+
+    <script>
+      const users = [
+        { username: "admin", password: "123456", fullName: "Quản trị viên" },
+        { username: "user1", password: "password", fullName: "Người dùng 1" },
+      ];
+
+      document.getElementById("login-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const username = e.target.username.value.trim();
+        const password = e.target.password.value.trim();
+
+        const user = users.find(
+          (u) => u.username === username && u.password === password
+        );
+
+        if (!user) {
+          alert("Sai tên đăng nhập hoặc mật khẩu!");
+          return;
+        }
+
+        // Lưu trạng thái đăng nhập
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("user", JSON.stringify({ username: user.fullName }));
+
+        // Chuyển hướng về trang chủ
+        window.location.href = "index.html";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sách | Bookstore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 text-gray-800 font-sans">
+    <!-- Dùng lại header + navbar -->
+    <script src="/include-header.js"></script>
+
+    <!-- BOOK LIST -->
+    <main class="px-6 py-10">
+      <h1 class="text-3xl font-bold mb-6">Tất cả sách</h1>
+      <div id="book-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </main>
+
+    <!-- MODAL cảnh báo chưa đăng nhập -->
+    <div id="login-warning-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+      <div class="bg-white p-6 rounded shadow-lg text-center w-[320px]">
+        <p class="text-lg font-semibold mb-4">Bạn cần đăng nhập để sử dụng tính năng này</p>
+        <div class="flex justify-between gap-4">
+          <a href="login.html" class="flex-1 bg-black text-white py-2 rounded hover:bg-gray-800">Đăng nhập</a>
+          <button onclick="openModal(); closeLoginWarning()" class="flex-1 border border-black text-black py-2 rounded hover:bg-gray-100">
+            Đăng ký
+          </button>
+        </div>
+        <button onclick="closeLoginWarning()" class="text-sm text-gray-500 mt-4 hover:underline">Đóng</button>
+      </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+      const books = [
+        {
+          title: "Elden Ring: Official Artbook",
+          genre: "Giả tưởng",
+          price: "120000",
+          image: "/books/eldenring.jpg",
+        },
+        {
+          title: "To Kill a Mockingbird",
+          genre: "Lịch sử",
+          price: "95000",
+          image: "/books/mockingbird.jpg",
+        },
+        {
+          title: "Dune",
+          genre: "Khoa học viễn tưởng",
+          price: "150000",
+          image: "/books/dune.jpg",
+        },
+        {
+          title: "Atomic Habits",
+          genre: "Phát triển bản thân",
+          price: "110000",
+          image: "/books/atomic.jpg",
+        },
+      ];
+
+      const container = document.getElementById("book-grid");
+
+      books.forEach((book) => {
+        const div = document.createElement("div");
+        div.className = "bg-white rounded shadow p-4";
+        div.innerHTML = `
+          <img src="${book.image}" alt="${book.title}" class="w-full h-60 object-cover rounded" />
+          <h3 class="mt-3 text-lg font-semibold">${book.title}</h3>
+          <p class="text-gray-600">Thể loại: ${book.genre}</p>
+          <p class="text-gray-800 font-bold mt-1">Giá: ${Number(book.price).toLocaleString("vi-VN")}đ</p>
+          <button
+            class="add-to-cart mt-3 w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition"
+            data-title="${book.title}"
+          >
+            Thêm vào giỏ hàng
+          </button>
+        `;
+        container.appendChild(div);
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        updateCartCount();
+
+        document.querySelectorAll(".add-to-cart").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const title = e.target.dataset.title;
+            const book = books.find(b => b.title === title);
+            addToCart(book.title, book.price);
+          });
+        });
+      });
+
+      function addToCart(title, price) {
+        const loggedIn = localStorage.getItem("loggedIn") === "true";
+        if (!loggedIn) {
+          document.getElementById("login-warning-modal").classList.remove("hidden");
+          return;
+        }
+
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        cart.push({ title, price });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCount();
+      }
+
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const count = cart.length;
+        const badge = document.querySelector("#cart-count");
+        if (badge) {
+          badge.textContent = count;
+        }
+      }
+
+      function closeLoginWarning() {
+        document.getElementById("login-warning-modal").classList.add("hidden");
+      }
+    </script>
+
+    <script src="register.js"></script>
+    <script src="include-register.js"></script>
+  </body>
+</html>

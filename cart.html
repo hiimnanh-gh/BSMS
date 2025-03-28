@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Giỏ hàng | Bookstore</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+  <script src="include-header.js"></script>
+
+  <main class="px-6 py-10">
+    <h1 class="text-3xl font-bold mb-6">Giỏ hàng của bạn</h1>
+    <div id="cart-list" class="space-y-4"></div>
+
+    <div class="mt-6 flex justify-between items-center border-t pt-4">
+      <div>
+        <label class="text-gray-700">
+          <input type="checkbox" id="select-all" class="mr-2" /> Chọn tất cả
+        </label>
+      </div>
+      <button onclick="goToCheckout()" class="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
+        Thanh toán
+      </button>
+    </div>
+  </main>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    function renderCart() {
+      const container = document.getElementById("cart-list");
+      container.innerHTML = "";
+
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="text-gray-600">Giỏ hàng của bạn trống.</p>`;
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        item.qty = item.qty || 1;
+
+        const div = document.createElement("div");
+        div.className = "flex items-center justify-between bg-white p-4 rounded shadow";
+
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <input type="checkbox" class="cart-checkbox" data-index="${index}" />
+            <div>
+              <p class="font-semibold">${item.title}</p>
+              <div class="flex items-center gap-2 mt-2">
+                <button onclick="changeQty(${index}, -1)" class="px-2 border rounded">-</button>
+                <span>${item.qty}</span>
+                <button onclick="changeQty(${index}, 1)" class="px-2 border rounded">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-gray-700">${item.price || "—"}</span>
+            <button onclick="removeItem(${index})" class="text-red-500 hover:underline text-sm">Xóa</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById("select-all").addEventListener("change", function() {
+        document.querySelectorAll(".cart-checkbox").forEach(cb => cb.checked = this.checked);
+      });
+    }
+
+    function changeQty(index, delta) {
+      cart[index].qty = (cart[index].qty || 1) + delta;
+      if (cart[index].qty < 1) cart[index].qty = 1;
+      saveCart();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      saveCart();
+    }
+
+    function saveCart() {
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    function goToCheckout() {
+      const selectedBooks = [];
+
+      document.querySelectorAll(".cart-checkbox").forEach((cb, i) => {
+        if (cb.checked) {
+          const item = cart[i];
+          selectedBooks.push({
+            title: item.title,
+            price: item.price,
+            qty: item.qty || 1
+          });
+        }
+      });
+
+      if (selectedBooks.length === 0) {
+        alert("Bạn chưa chọn sách nào để thanh toán!");
+        return;
+      }
+
+      localStorage.setItem("checkout", JSON.stringify(selectedBooks));
+      window.location.href = "/checkout.html";
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
