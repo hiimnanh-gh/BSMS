@@ -102,7 +102,9 @@
           const quantity = 1; // Số lượng mặc định là 1
 
           try {
-            const cartID = await getCartID();
+            let cartID = sessionStorage.getItem("cartID");
+            console.log("cartID:", cartID); // Kiểm tra giá trị cartID
+
             if (!cartID) return;
 
             // Gọi API để thêm sản phẩm vào giỏ hàng
@@ -187,6 +189,7 @@
         document.querySelectorAll(".add-to-cart").forEach((btn) => {
           btn.addEventListener("click", async (e) => {
             const BookID = e.target.dataset.id;
+
             if (!BookID) return;
 
             if (!isUserLoggedIn()) {
@@ -199,16 +202,21 @@
 
             try {
               const CartID = await getCartID();
+              console.log(CartID);
+
               if (!CartID) throw new Error("Không tìm thấy giỏ hàng.");
 
               const existingCartItem = await checkCartItem(CartID, BookID);
-              if (existingCartItem) {
+              console.log("existingCartItem:", existingCartItem); // Kiểm tra giá trị existingCartItem
+
+              if (existingCartItem.message == "Sản phẩm đã có trong giỏ hàng") {
                 await updateCartItem(
-                  existingCartItem.cartItemID,
+                  existingCartItem.cartID,
                   existingCartItem.quantity + 1
                 );
               } else {
-                await addToCart(cartID, bookID, 1);
+                let response = addToCart(CartID, BookID, 1);
+                console.log("✅ Thêm vào giỏ hàng thành công:", response);
               }
 
               alert(`✅ Đã thêm vào giỏ hàng!`);
@@ -221,32 +229,33 @@
 
       // Kiểm tra xem sách đã có trong giỏ hàng chưa
       async function checkCartItem(cartID, bookID) {
-        let cartId = sessionStorage.getItem("cartID");
-        console.log("cartID:", cartId); // Kiểm tra giá trị cartID
+        console.log("cartID:", cartID); // Kiểm tra giá trị cartID
         console.log("bookID:", bookID); // Kiểm tra giá trị bookID
+
         // Lấy cartID từ sessionStorage
-        if (!cartId) {
+        if (!cartID) {
           console.error("Lỗi: Không tìm thấy cartID");
           return;
         }
 
         try {
           let response = await fetch(
-            `http://localhost:5178/CartItem/Check?cartID=${cartId}&bookID=${bookID}`
+            `http://localhost:5178/CartItem/Check?cartID=${cartID}&bookID=${bookID}`
           );
           if (!response.ok) {
             throw new Error("Không tìm thấy sản phẩm trong giỏ hàng");
           }
           let data = await response.json();
           console.log("Kết quả:", data);
+          return data; // Trả về dữ liệu sản phẩm trong giỏ hàng
         } catch (error) {
           console.error("Lỗi khi xử lý giỏ hàng:", error);
         }
       }
 
       // Thêm sách vào giỏ hàng
-      async function addToCart(bookID) {
-        let cartID = sessionStorage.getItem("cartID");
+      async function addToCart(cartID, bookID, quantity) {
+        console.log("Thêm vào giỏ hàng:", cartID, bookID, quantity); // Kiểm tra giá trị cartID, bookID và quantity
 
         if (!cartID) {
           console.error("⚠️ Lỗi: Không tìm thấy cartID");
@@ -255,7 +264,7 @@
 
         try {
           let response = await fetch(
-            `http://localhost:5178/CartItem/Insert?cartID=${cartID}&bookID=${bookID}&quantity=1`,
+            `http://localhost:5178/CartItem/Insert?cartID=${cartID}&bookID=${bookID}&quantity=${quantity}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -266,7 +275,7 @@
           if (!response.ok)
             throw new Error(data.message || "Lỗi khi thêm vào giỏ");
 
-          console.log("✅ Thêm vào giỏ hàng thành công:", data);
+          return data; // Trả về dữ liệu thêm vào giỏ hàng
         } catch (error) {
           console.error("❌ Lỗi khi thêm sách vào giỏ:", error);
         }
@@ -332,3 +341,4 @@
     </script>
   </body>
 </html>
+<div></div>
