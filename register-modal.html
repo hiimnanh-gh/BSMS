@@ -1,16 +1,92 @@
-<!-- register-modal.html -->
-<div id="register-modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg relative">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-xl">&times;</button>
-      <h2 class="text-2xl font-semibold mb-4">Đăng ký tài khoản</h2>
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | Bookstore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+      <h2 class="text-2xl font-bold text-center mb-6">Đăng ký</h2>
       <form id="register-form" class="space-y-4">
-        <input name="fullName" type="text" placeholder="Họ tên" class="w-full border px-3 py-2 rounded" required />
-        <input name="username" type="text" placeholder="Tên đăng nhập" class="w-full border px-3 py-2 rounded" required />
-        <input name="email" type="email" placeholder="Email" class="w-full border px-3 py-2 rounded" required />
-        <input name="password" type="password" placeholder="Mật khẩu" class="w-full border px-3 py-2 rounded" required />
-        <input name="dob" type="date" class="w-full border px-3 py-2 rounded" required />
-        <button type="submit" class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition">Đăng ký</button>
+        <input
+          type="text"
+          name="username"
+          placeholder="Tên đăng nhập"
+          class="w-full border rounded px-4 py-2"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          class="w-full border rounded px-4 py-2"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Mật khẩu"
+          class="w-full border rounded px-4 py-2"
+          required
+        />
+        <!-- Thêm phần chọn Role -->
+        <select name="role" class="w-full border rounded px-4 py-2" required>
+          <option value="" disabled selected>Chọn vai trò</option>
+          <option value="customer">Khách hàng</option>
+          <option value="warehouse manager">Quản lý kho</option>
+          <option value="admin">Quản trị viên</option>
+          <option value="editor">Biên tập viên</option>
+        </select>
+        <button
+          type="submit"
+          class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition"
+        >
+          Đăng ký
+        </button>
+        <p class="text-center mt-4">
+          Đã có tài khoản?
+          <a href="login.html" class="text-blue-600 hover:underline">
+            Đăng nhập
+          </a>
+        </p>
       </form>
     </div>
-  </div>
-  
+
+    <script>
+      document
+        .getElementById("register-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const username = e.target.username.value.trim();
+          const email = e.target.email.value.trim();
+          const password = e.target.password.value.trim();
+          const role = e.target.role.value.trim(); // Lấy giá trị role
+
+          try {
+            const response = await fetch(
+              "http://localhost:5178/User/register",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password, role }), // Gửi role đi
+              }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              alert(data.message || "Đã có lỗi xảy ra!");
+              return;
+            }
+
+            alert("Đăng ký thành công!");
+            window.location.href = "login.html";
+          } catch (error) {
+            alert("Lỗi kết nối đến server!");
+          }
+        });
+    </script>
+  </body>
+</html>

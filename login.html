@@ -6,6 +6,13 @@
     <title>Login | Bookstore</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
+  <div>
+    <div class="flex justify-between items-center bg-gray-800 p-4 text-white">
+      <h1 class="text-xl font-bold">Bookstore</h1>
+      <nav class="space-x-4">
+        <a href="index.html" class="hover:underline">Trang chủ</a>
+      </nav>
+  </div>
   <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
       <h2 class="text-2xl font-bold text-center mb-6">Đăng nhập</h2>
@@ -30,36 +37,49 @@
         >
           Đăng nhập
         </button>
+        <p class="text-center mt-4">
+          Chưa có tài khoản?
+          <a href="register-modal.html" class="text-blue-600 hover:underline">
+            Đăng ký
+          </a>
+        </p>
       </form>
     </div>
 
     <script>
-      const users = [
-        { username: "admin", password: "123456", fullName: "Quản trị viên" },
-        { username: "user1", password: "password", fullName: "Người dùng 1" },
-      ];
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const username = e.target.username.value.trim();
+          const password = e.target.password.value.trim();
 
-      document.getElementById("login-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const username = e.target.username.value.trim();
-        const password = e.target.password.value.trim();
+          try {
+            const response = await fetch("http://localhost:5178/User/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username, password }),
+            });
 
-        const user = users.find(
-          (u) => u.username === username && u.password === password
-        );
+            const data = await response.json(); // Đảm bảo lấy dữ liệu từ API
 
-        if (!user) {
-          alert("Sai tên đăng nhập hoặc mật khẩu!");
-          return;
-        }
+            if (!response.ok) {
+              console.error("Error details:", data); // Log chi tiết lỗi
+              alert("Lỗi server: " + (data.message || "Đã có lỗi xảy ra!"));
+              return;
+            }
 
-        // Lưu trạng thái đăng nhập
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("user", JSON.stringify({ username: user.fullName }));
+            // Lưu thông tin user vào sessionStorage
+            sessionStorage.setItem("UserID", data.userId);
+            sessionStorage.setItem("UserName", data.username);
 
-        // Chuyển hướng về trang chủ
-        window.location.href = "index.html";
-      });
+            alert("Đăng nhập thành công!");
+            window.location.href = "index.html";
+          } catch (error) {
+            console.error("Lỗi kết nối đến server:", error);
+            alert("Lỗi kết nối đến server!");
+          }
+        });
     </script>
   </body>
 </html>
