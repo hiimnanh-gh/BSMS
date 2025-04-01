@@ -62,39 +62,6 @@
         return userId !== null;
       }
 
-      // Lấy cartID của người dùng hoặc tạo mới
-      // Thêm giỏ hàng cho người dùng khi bấm "Thêm vào giỏ hàng"
-      async function getCartID() {
-        try {
-          let userID = sessionStorage.getItem("UserID"); // Lấy userID từ localStorage
-          if (!userID) {
-            throw new Error("User is not logged in!");
-          }
-
-          // Kiểm tra xem người dùng đã có giỏ hàng chưa
-          let cartID = sessionStorage.getItem("cartID"); // Kiểm tra nếu đã có cartID trong sessionStorage
-          if (!cartID) {
-            // Gọi API để tạo giỏ hàng mới nếu chưa có
-            const response = await fetch(
-              `http://localhost:5178/ShoppingCart/CreateCart?userID=${userID}`,
-              { method: "POST" }
-            );
-            if (!response.ok) {
-              throw new Error("Không thể tạo giỏ hàng");
-            }
-            const data = await response.json();
-            cartID = data.cartID; // Lấy cartID mới tạo
-            sessionStorage.setItem("cartID", cartID); // Lưu cartID vào localStorage
-          }
-
-          return cartID;
-        } catch (error) {
-          console.error("Lỗi lấy cartID:", error);
-          alert("Không thể tạo hoặc lấy giỏ hàng.");
-          return null;
-        }
-      }
-
       // Gắn sự kiện cho nút "Thêm vào giỏ hàng"
       document.querySelectorAll(".add-to-cart").forEach((btn) => {
         btn.addEventListener("click", async (e) => {
@@ -201,12 +168,10 @@
             }
 
             try {
-              const CartID = await getCartID();
-              console.log(CartID);
+              // Lấy cartID từ sessionStorage
+              const cartID = sessionStorage.getItem("cartID");
 
-              if (!CartID) throw new Error("Không tìm thấy giỏ hàng.");
-
-              const existingCartItem = await checkCartItem(CartID, BookID);
+              const existingCartItem = await checkCartItem(cartID, BookID);
               console.log("existingCartItem:", existingCartItem); // Kiểm tra giá trị existingCartItem
 
               if (existingCartItem.message == "Sản phẩm đã có trong giỏ hàng") {
@@ -215,7 +180,7 @@
                   existingCartItem.quantity + 1
                 );
               } else {
-                let response = addToCart(CartID, BookID, 1);
+                let response = addToCart(cartID, BookID, 1);
                 console.log("✅ Thêm vào giỏ hàng thành công:", response);
               }
 
@@ -233,11 +198,7 @@
         console.log("bookID:", bookID); // Kiểm tra giá trị bookID
 
         // Lấy cartID từ sessionStorage
-        if (!cartID) {
-          console.error("Lỗi: Không tìm thấy cartID");
-          return;
-        }
-
+        cartID = sessionStorage.getItem("cartID");
         try {
           let response = await fetch(
             `http://localhost:5178/CartItem/Check?cartID=${cartID}&bookID=${bookID}`
@@ -255,13 +216,6 @@
 
       // Thêm sách vào giỏ hàng
       async function addToCart(cartID, bookID, quantity) {
-        console.log("Thêm vào giỏ hàng:", cartID, bookID, quantity); // Kiểm tra giá trị cartID, bookID và quantity
-
-        if (!cartID) {
-          console.error("⚠️ Lỗi: Không tìm thấy cartID");
-          return;
-        }
-
         try {
           let response = await fetch(
             `http://localhost:5178/CartItem/Insert?cartID=${cartID}&bookID=${bookID}&quantity=${quantity}`,
@@ -305,32 +259,6 @@
           console.log("✅ Cập nhật giỏ hàng thành công:", data);
         } catch (error) {
           console.error("❌ Lỗi khi cập nhật giỏ hàng:", error);
-        }
-      }
-
-      async function removeCartItem(bookID) {
-        let cartID = sessionStorage.getItem("cartID");
-
-        if (!cartID) {
-          console.error("⚠️ Lỗi: Không tìm thấy cartID");
-          return;
-        }
-
-        try {
-          let response = await fetch(
-            `http://localhost:5178/CartItem/Delete?cartID=${cartID}&bookID=${bookID}`,
-            {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-            }
-          );
-
-          let data = await response.json();
-          if (!response.ok) throw new Error(data.message || "Lỗi khi xóa");
-
-          console.log("✅ Xóa sản phẩm thành công:", data);
-        } catch (error) {
-          console.error("❌ Lỗi khi xóa sản phẩm:", error);
         }
       }
 

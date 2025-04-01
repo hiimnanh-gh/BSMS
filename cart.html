@@ -31,69 +31,83 @@
     <script>
       const API_URL = "http://localhost:5178/CartItem";
 
+      // 🛒 Load giỏ hàng
       async function fetchCart() {
         try {
-          const response = await fetch(`${API_URL}/GetList`);
+          const cartID = sessionStorage.getItem("cartID");
+
+          const response = await fetch(`${API_URL}/GetList?cartID=${cartID}`);
+
           if (!response.ok) throw new Error("Không thể lấy giỏ hàng");
+
           const cartItems = await response.json();
+          console.log("Giỏ hàng:", cartItems); // Debug kiểm tra
+          console.log("Giỏ hàng:", cartItems);
+
           renderCart(cartItems);
         } catch (error) {
           console.error("Lỗi tải giỏ hàng:", error);
         }
       }
 
-      async function addToCart(cartID, bookID, quantity = 1) {
-        try {
-          const response = await fetch(
-            `${API_URL}/Insert?cartID=${cartID}&bookID=${bookID}&quantity=${quantity}`,
-            {
-              method: "POST",
-            }
-          );
-          if (!response.ok) throw new Error("Không thể thêm vào giỏ hàng");
-          alert("Đã thêm vào giỏ hàng!");
-          fetchCart();
-        } catch (error) {
-          console.error("Lỗi thêm giỏ hàng:", error);
-        }
-      }
-
+      // 🔄 Cập nhật số lượng sản phẩm
       async function updateCart(cartID, bookID, quantity) {
-        if (quantity <= 0) return removeCartItem(cartID, bookID);
+        if (quantity <= 0) {
+          console.log(`Xóa sản phẩm: ${bookID}`); // Debug kiểm tra
+          return removeCartItem(cartID, bookID);
+        }
+
         try {
           const response = await fetch(
             `${API_URL}/Update?cartID=${cartID}&bookID=${bookID}&quantity=${quantity}`,
             {
-              method: "POST",
+              method: "PUT", // Hoặc "PUT" tùy theo API backend
+              headers: {
+                "Content-Type": "application/json", // Nếu API yêu cầu JSON
+              },
+              body: JSON.stringify({ cartID, bookID, quantity }),
             }
           );
+
           if (!response.ok) throw new Error("Không thể cập nhật giỏ hàng");
+
+          console.log(`Cập nhật thành công: ${bookID} - Số lượng: ${quantity}`);
           fetchCart();
         } catch (error) {
           console.error("Lỗi cập nhật giỏ hàng:", error);
         }
       }
 
+      // ❌ Xóa sản phẩm khỏi giỏ hàng
       async function removeCartItem(cartID, bookID) {
         try {
           const response = await fetch(
             `${API_URL}/Delete?cartID=${cartID}&bookID=${bookID}`,
             {
-              method: "POST",
+              method: "DELETE",
             }
           );
-          if (!response.ok) throw new Error("Không thể xóa sản phẩm");
-          fetchCart();
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Lỗi xóa sản phẩm: ${errorText}`);
+          }
+
+          console.log(`Đã xóa sản phẩm ${bookID} khỏi giỏ hàng`);
+          fetchCart(); // Load lại giỏ hàng sau khi xóa
         } catch (error) {
           console.error("Lỗi xóa sản phẩm:", error);
         }
       }
 
+      // 🎨 Render giỏ hàng với thông tin đầy đủ
       function renderCart(cartItems) {
+        console.log(cartItems);
+
         const container = document.getElementById("cart-list");
         container.innerHTML = "";
 
-        if (cartItems.length === 0) {
+        if (cartItems == null || cartItems.length === 0) {
           container.innerHTML = `<p class="text-gray-600">Giỏ hàng trống.</p>`;
           return;
         }
@@ -102,32 +116,38 @@
           const div = document.createElement("div");
           div.className =
             "flex items-center justify-between bg-white p-4 rounded shadow";
+
           div.innerHTML = `
-            <div class="flex items-center gap-3">
-              <input type="checkbox" class="cart-checkbox" data-id="${
-                item.bookId
-              }" />
-              <div>
-                <p class="font-semibold">${item.bookId}</p>
+        <div class="flex items-center gap-3">
+            <input type="checkbox" class="cart-checkbox" data-id="${
+              item.bookId
+            }" />
+            <div>
+                <p class="font-semibold">${item.bookTitle}</p>
+                <p class="text-sm text-gray-500">${item.bookPrice.toFixed(
+                  2
+                )} VND</p>
                 <div class="flex items-center gap-2 mt-2">
-                  <button onclick="updateCart('${item.cartId}', '${
+                    <button onclick="updateCart('${item.cartId}', '${
             item.bookId
           }', ${item.quantity - 1})" class="px-2 border rounded">-</button>
-                  <span>${item.quantity}</span>
-                  <button onclick="updateCart('${item.cartId}', '${
+                    <span>${item.quantity}</span>
+                    <button onclick="updateCart('${item.cartId}', '${
             item.bookId
           }', ${item.quantity + 1})" class="px-2 border rounded">+</button>
                 </div>
-              </div>
             </div>
-            <button onclick="removeCartItem('${item.cartId}', '${
+        </div>
+        <button onclick="removeCartItem('${item.cartId}', '${
             item.bookId
           }')" class="text-red-500 hover:underline text-sm">Xóa</button>
-          `;
+    `;
+
           container.appendChild(div);
         });
       }
 
+      // 🔄 Load giỏ hàng khi vào trang
       fetchCart();
     </script>
   </body>

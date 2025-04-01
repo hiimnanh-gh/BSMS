@@ -72,7 +72,7 @@
             // Lưu thông tin user vào sessionStorage
             sessionStorage.setItem("UserID", data.userId);
             sessionStorage.setItem("UserName", data.username);
-
+            getCartID(); // Gọi hàm tạo giỏ hàng sau khi đăng nhập thành công
             alert("Đăng nhập thành công!");
             window.location.href = "index.html";
           } catch (error) {
@@ -80,6 +80,32 @@
             alert("Lỗi kết nối đến server!");
           }
         });
+
+        async function getCartID() {
+        try {
+          let userID = sessionStorage.getItem("UserID"); // Lấy userID từ localStorage
+          if (!userID) {
+            throw new Error("User is not logged in!");
+          }
+          const response = await fetch(
+            `http://localhost:5178/ShoppingCart/GetOrCreateCart?userID=${userID}`,
+            { method: "GET" }
+          );
+          if (!response.ok) {
+            throw new Error("Không thể tạo giỏ hàng");
+          }
+          const data = await response.json();
+          cartID = data.cartID; // Lấy cartID mới tạo
+          sessionStorage.setItem("cartID", cartID); // Lưu cartID vào localStorage
+
+          return cartID;
+        } catch (error) {
+          console.error("Lỗi lấy cartID:", error);
+          alert("Không thể tạo hoặc lấy giỏ hàng.");
+          return null;
+        }
+      }
+
     </script>
   </body>
 </html>
