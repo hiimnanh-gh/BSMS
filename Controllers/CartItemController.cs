@@ -14,12 +14,27 @@ namespace BookStoreAPI.Controllers
             dbc = db;
         }
 
-        [HttpGet]
-        [Route("GetList")]
-        public IActionResult GetList()
+        [HttpGet("GetList")]
+public IActionResult GetCartItems(string cartID)
+{
+            
+    var cartItems = dbc.CartItems
+
+        .Where(ci => ci.CartId == cartID)
+        .Select(ci => new
         {
-            return Ok(dbc.CartItems.ToList());
-        }
+            ci.CartId,
+            ci.BookId,
+            ci.Quantity,
+            BookTitle = dbc.Books.Where(b => b.BookId == ci.BookId).Select(b => b.Title).FirstOrDefault(),
+            BookPrice = dbc.Books.Where(b => b.BookId == ci.BookId).Select(b => b.Price).FirstOrDefault()
+        })
+        .ToList();
+
+    return Ok(cartItems);
+}
+
+       
 
 
         [HttpGet("Check")]

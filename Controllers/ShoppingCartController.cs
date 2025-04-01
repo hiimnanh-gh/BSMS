@@ -105,29 +105,34 @@ namespace BookStoreAPI.Controllers
         }
 
         // Tạo giỏ hàng mới cho người dùng nếu chưa có giỏ hàng
-        [HttpPost("CreateCart")]
-        public IActionResult CreateCart(string userID)
+        [HttpGet("GetOrCreateCart")]
+        public IActionResult GetOrCreateCart(string userID)
         {
-            if (string.IsNullOrEmpty(userID))
+            var cart = dbc.ShoppingCarts.FirstOrDefault(c => c.UserId == userID);
+
+            if (cart != null)
             {
-                return BadRequest(new { message = "User ID không hợp lệ" });
+                // Nếu đã có giỏ hàng, trả về cartID
+                return Ok(new { cartID = cart.CartId });
             }
-
-            // Tạo mới giỏ hàng cho người dùng mỗi lần
-            var newCartID = Guid.NewGuid().ToString(); // Tạo cartID mới, có thể dùng GUID để tạo cartID duy nhất
-            var newCart = new ShoppingCart
+            else
             {
-                CartId = newCartID,
-                UserId = userID,
-                TotalAmount = 0 // Giỏ hàng mới sẽ có tổng tiền ban đầu là 0
-            };
+                // Tạo mới giỏ hàng cho người dùng mỗi lần
+                var newCartID = Guid.NewGuid().ToString(); // Tạo cartID mới, có thể dùng GUID để tạo cartID duy nhất
+                var newCart = new ShoppingCart
+                {
+                    CartId = newCartID,
+                    UserId = userID,
+                    TotalAmount = 0 // Giỏ hàng mới sẽ có tổng tiền ban đầu là 0
+                };
 
-            // Lưu giỏ hàng mới vào cơ sở dữ liệu
-            dbc.ShoppingCarts.Add(newCart);
-            dbc.SaveChanges();
+                // Lưu giỏ hàng mới vào cơ sở dữ liệu
+                dbc.ShoppingCarts.Add(newCart);
+                dbc.SaveChanges();
 
-            // Trả về cartID mới cho frontend
-            return Ok(new { cartID = newCartID });
+                // Trả về cartID mới cho frontend
+                return Ok(new { cartID = newCartID });
+            }
         }
 
 

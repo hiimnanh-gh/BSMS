@@ -90,12 +90,18 @@
   },
   {
     "ContainingType": "BookStoreAPI.Controllers.CartItemController",
-    "Method": "GetList",
+    "Method": "GetCartItems",
     "RelativePath": "CartItem/GetList",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "cartID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -521,22 +527,6 @@
   },
   {
     "ContainingType": "BookStoreAPI.Controllers.ShoppingCartController",
-    "Method": "CreateCart",
-    "RelativePath": "ShoppingCart/CreateCart",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userID",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "BookStoreAPI.Controllers.ShoppingCartController",
     "Method": "Delete",
     "RelativePath": "ShoppingCart/Delete",
     "HttpMethod": "POST",
@@ -559,6 +549,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BookStoreAPI.Controllers.ShoppingCartController",
+    "Method": "GetOrCreateCart",
+    "RelativePath": "ShoppingCart/GetOrCreateCart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

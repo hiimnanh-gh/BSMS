@@ -54,6 +54,9 @@ var app = builder.Build();
 // ✅ Bật CORS
 app.UseCors("AllowAll");
 
+// Áp dụng chính sách CORS
+
+
 // ✅ Cho phép truy cập ảnh từ thư mục wwwroot/uploads/
 app.UseStaticFiles();
 

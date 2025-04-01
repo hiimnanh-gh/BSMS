@@ -57,6 +57,15 @@
         "tags": [
           "CartItem"
         ],
+        "parameters": [
+          {
+            "name": "cartID",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -791,8 +800,8 @@
         }
       }
     },
-    "/ShoppingCart/CreateCart": {
-      "post": {
+    "/ShoppingCart/GetOrCreateCart": {
+      "get": {
         "tags": [
           "ShoppingCart"
         ],

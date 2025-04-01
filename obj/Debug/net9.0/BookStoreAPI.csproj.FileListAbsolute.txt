@@ -284,3 +284,4 @@ C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.pdb
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.genruntimeconfig.cache
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\ref\BookStoreAPI.dll
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.sourcelink.json
