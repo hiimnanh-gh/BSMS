@@ -1,6 +1,7 @@
 ﻿using BookStoreAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreAPI.Controllers
 {
@@ -21,33 +22,168 @@ namespace BookStoreAPI.Controllers
             return Ok(dbc.Orders.ToList());
         }
 
-        [HttpPost]
-        [Route("Insert")]
-        public IActionResult Insert(string orderID, string userID, string status, decimal totalAmount)
+
+        [HttpPost("CreateOrder")]
+        public IActionResult CreateOrder(OrderRequest orderRequest)
         {
-            if (string.IsNullOrEmpty(orderID) || string.IsNullOrEmpty(userID) || string.IsNullOrEmpty(status))
+            Console.WriteLine("== BẮT ĐẦU XỬ LÝ ĐƠN HÀNG ==");
+
+            if (orderRequest == null)
             {
-                return BadRequest(new { message = "Dữ liệu không hợp lệ" });
+                Console.WriteLine("❌ orderRequest null");
+                return BadRequest("Thông tin đơn hàng không hợp lệ.");
             }
 
-            if (totalAmount <= 0)
+            // Debug xem có gì trong request
+            Console.WriteLine($"➡ UserId nhận: {orderRequest.UserId}");
+            Console.WriteLine($"➡ Address: {orderRequest.Address}");
+            Console.WriteLine($"➡ PaymentMethod: {orderRequest.PaymentMethod}");
+            Console.WriteLine($"➡ Số lượng OrderItems: {orderRequest.OrderItems?.Count}");
+
+            // Trim UserId để tránh lỗi ký tự trắng
+            var trimmedUserId = orderRequest.UserId?.Trim();
+
+            // In danh sách userID trong database để đối chiếu
+            Console.WriteLine("== Danh sách UserId trong DB ==");
+            foreach (var u in dbc.Users.ToList())
             {
-                return BadRequest(new { message = "Giá không hợp lệ" });
+                Console.WriteLine($"- {u.UserId}");
             }
+
+            // Kiểm tra UserId hợp lệ không
+            if (string.IsNullOrWhiteSpace(trimmedUserId) ||
+                !dbc.Users.Any(u => u.UserId == trimmedUserId))
+            {
+                Console.WriteLine("❌ UserId không hợp lệ hoặc không tồn tại trong DB");
+                return BadRequest(new { message = "UserId không hợp lệ hoặc không tồn tại." });
+            }
+
+            // Kiểm tra các field khác
+            if (string.IsNullOrWhiteSpace(orderRequest.Address) ||
+                string.IsNullOrWhiteSpace(orderRequest.PaymentMethod) ||
+                orderRequest.OrderItems == null || orderRequest.OrderItems.Count == 0)
+            {
+                Console.WriteLine("❌ Thiếu thông tin đơn hàng");
+                return BadRequest("Vui lòng điền đầy đủ thông tin đơn hàng.");
+            }
+
+            // Tạo OrderId mới
+            var newOrderId = Guid.NewGuid().ToString();
+            decimal totalAmount = 0;
+
+            foreach (var item in orderRequest.OrderItems)
+            {
+                var book = dbc.Books.FirstOrDefault(b => b.BookId == item.BookId);
+                if (book != null)
+                {
+                    totalAmount += (book.Price.GetValueOrDefault() * item.Quantity);
+                }
+                else
+                {
+                    Console.WriteLine($"❌ Không tìm thấy sách với BookId: {item.BookId}");
+                }
+            }
+
+            var user = dbc.Users.FirstOrDefault(u => u.UserId == trimmedUserId);
+            if (user == null)
+            {
+                return BadRequest(new { message = "User không tồn tại." });
+            }
+
+            // Thêm để log cho chắc
+            Console.WriteLine("➡ User Address: " + user.Address);
+            Console.WriteLine("➡ User PaymentMethod: " + user.PaymentInfo);
 
             var order = new Order
             {
-                OrderId = orderID,
-                UserId = userID,
-                OrderDate = DateTime.Now,
-                Status = status,
-                TotalAmount = totalAmount
+                OrderId = newOrderId,
+                UserId = trimmedUserId,
+                OrderDate = DateTime.UtcNow,
+                Status = "Pending",
+                TotalAmount = totalAmount,
             };
 
             dbc.Orders.Add(order);
             dbc.SaveChanges();
-            return Ok(order);
+
+            // Tạo các mục OrderItems
+            foreach (var item in orderRequest.OrderItems)
+            {
+                var orderItem = new OrderItem
+                {
+                    OrderId = newOrderId,
+                    BookId = item.BookId,
+                    Quantity = item.Quantity
+                };
+                dbc.OrderItems.Add(orderItem);
+            }
+            dbc.SaveChanges();
+
+            Console.WriteLine("✅ Tạo đơn hàng thành công với OrderId: " + newOrderId);
+
+            return Ok(new { orderId = newOrderId });
         }
+
+
+
+
+
+        [HttpPost("Insert")]
+        public async Task<IActionResult> Insert([FromBody] Order order)
+        {
+            if (order == null)
+            {
+                return BadRequest("Dữ liệu không hợp lệ");
+            }
+
+            dbc.Orders.Add(order);
+            await dbc.SaveChangesAsync();
+            return Ok(new { orderID = order.OrderId }); // trả về ID của đơn hàng
+        }
+
+
+        [HttpGet("GetOrdersByUserId/{userId}")]
+        public async Task<IActionResult> GetOrdersByUserId(string userId)
+        {
+            // Lấy tất cả đơn hàng của userId từ bảng Orders và bao gồm thông tin OrderItems và Books
+            var orders = await dbc.Orders
+                .Where(o => o.UserId == userId)
+                .Include(o => o.User)  // Lấy thông tin người dùng
+                .Include(o => o.OrderItems)  // Lấy chi tiết món hàng trong đơn
+                    .ThenInclude(oi => oi.Book)  // Lấy thông tin sách từ OrderItems
+                .ToListAsync();
+
+            if (orders == null || orders.Count == 0)
+            {
+                return NotFound("Không tìm thấy đơn hàng.");
+            }
+
+            // Chuyển đổi dữ liệu đơn hàng
+            var orderDtos = orders.Select(order => new
+            {
+                order.OrderId,  // Id đơn hàng
+                customerName = order.User.Username,  // Tên người dùng
+                customerPhone = order.User.Email,  // Email người dùng
+                customerAddress = order.User.Address,  // Địa chỉ người dùng
+                orderDate = order.OrderDate,  // Ngày đặt hàng
+                status = order.Status,  // Trạng thái đơn hàng
+                totalAmount = order.TotalAmount,  // Tổng số tiền
+                items = order.OrderItems.Select(oi => new  // Lấy thông tin sách từ OrderItems
+                {
+                    bookTitle = oi.Book.Title,  // Tên sách
+                    quantity = oi.Quantity,  // Số lượng
+                    price = oi.Book.Price  // Giá sách
+                }).ToList()
+            }).ToList();
+
+            return Ok(orderDtos);
+        }
+
+
+
+
+
+
 
         [HttpPost]
         [Route("Update")]

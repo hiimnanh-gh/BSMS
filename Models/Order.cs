@@ -12,7 +12,7 @@ public partial class Order
     [Column("orderID")]
     [StringLength(255)]
     [Unicode(false)]
-    public string OrderId { get; set; } = null!;
+    public string OrderId { get; set; }
 
     [Column("userID")]
     [StringLength(255)]

@@ -118,7 +118,7 @@ public IActionResult GetCartItems(string cartID)
 
             if (quantity == null)
             {
-                return BadRequest(new { message = "đéo có gì" });
+                return BadRequest(new { message = "nothing " });
             }
 
             var existingCartItem = dbc.CartItems.FirstOrDefault(c => c.CartId == cartID && c.BookId == bookID);

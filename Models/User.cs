@@ -37,6 +37,11 @@ public partial class User
     [Unicode(false)]
     public string? PaymentInfo { get; set; }
 
+    [Column("address")]
+    [StringLength(255)]
+    [Unicode(false)]
+    public string? Address { get; set; }
+
     [Column("role")]
     [StringLength(20)]
     [Unicode(false)]

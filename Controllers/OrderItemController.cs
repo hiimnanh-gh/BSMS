@@ -1,6 +1,7 @@
 ﻿using BookStoreAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreAPI.Controllers
 {
@@ -21,31 +22,19 @@ namespace BookStoreAPI.Controllers
             return Ok(dbc.OrderItems.ToList());
         }
 
-        [HttpPost]
-        [Route("Insert")]
-        public IActionResult Insert(string orderID, string bookID, int quantity)
+        [HttpPost("InsertItems")]
+        public async Task<IActionResult> InsertItems([FromBody] List<OrderItem> orderItems)
         {
-            if (string.IsNullOrEmpty(orderID) || string.IsNullOrEmpty(bookID))
+            if (orderItems == null || !orderItems.Any())
             {
-                return BadRequest(new { message = "Dữ liệu không hợp lệ" });
+                return BadRequest("Dữ liệu không hợp lệ");
             }
 
-            if (quantity <= 0)
-            {
-                return BadRequest(new { message = "Số lượng không hợp lệ" });
-            }
-
-            var orderItem = new OrderItem
-            {
-                OrderId = orderID,
-                BookId = bookID,
-                Quantity = quantity
-            };
-
-            dbc.OrderItems.Add(orderItem);
-            dbc.SaveChanges();
-            return Ok(orderItem);
+            dbc.OrderItems.AddRange(orderItems);
+            await dbc.SaveChangesAsync();
+            return Ok();
         }
+
 
         [HttpPost]
         [Route("Update")]
