@@ -112,39 +112,8 @@
     </div>
 
     <script>
-      document.querySelectorAll('input[name="payment"]').forEach((radio) => {
-        radio.addEventListener("change", function () {
-          const selectedPaymentMethod = document.querySelector(
-            'input[name="payment"]:checked'
-          ).value;
-          const paymentDetailsEl = document.getElementById("payment-details");
-          paymentDetailsEl.classList.remove("hidden");
-
-          if (selectedPaymentMethod === "credit") {
-            paymentDetailsEl.innerHTML = `
-                <input type="text" id="card-number" placeholder="Số thẻ tín dụng" class="w-full border px-4 py-2 rounded mb-4" required />
-                <input type="text" id="card-expiry" placeholder="Ngày hết hạn" class="w-full border px-4 py-2 rounded mb-4" required />
-                <input type="text" id="card-cvc" placeholder="CVC" class="w-full border px-4 py-2 rounded mb-4" required />
-            `;
-          } else if (selectedPaymentMethod === "bank") {
-            paymentDetailsEl.innerHTML = `
-                <input type="text" id="bank-account" placeholder="Số tài khoản ngân hàng" class="w-full border px-4 py-2 rounded mb-4" required />
-                <input type="text" id="bank-name" placeholder="Tên ngân hàng" class="w-full border px-4 py-2 rounded mb-4" required />
-            `;
-          } else if (selectedPaymentMethod === "transfer") {
-            paymentDetailsEl.innerHTML = `
-                <input type="text" id="transfer-account" placeholder="Số tài khoản chuyển khoản" class="w-full border px-4 py-2 rounded mb-4" required />
-                <input type="text" id="transfer-bank" placeholder="Ngân hàng chuyển khoản" class="w-full border px-4 py-2 rounded mb-4" required />
-            `;
-          } else {
-            paymentDetailsEl.innerHTML = ""; // Nếu chọn phương thức khác, ẩn thông tin thanh toán bổ sung
-          }
-        });
-      });
-
+      // lấy user id từ sessionStorage
       const userId = sessionStorage.getItem("UserID");
-      console.log("UserId từ sessionStorage: ", userId);
-
       document.addEventListener("DOMContentLoaded", function () {
         loadCheckoutItems();
       });
@@ -229,7 +198,7 @@
           .value.trim();
         const paymentMethod = document.querySelector(
           "input[name='payment']:checked"
-        ).value;
+        ).value; // Lấy phương thức thanh toán từ radio button
         const checkoutItems =
           JSON.parse(sessionStorage.getItem("checkoutItems")) || [];
 
@@ -243,32 +212,11 @@
           return;
         }
 
-        // Lấy thông tin thanh toán bổ sung
-        let paymentDetails = {};
-        if (paymentMethod === "credit") {
-          paymentDetails = {
-            cardNumber: document.getElementById("card-number").value,
-            cardExpiry: document.getElementById("card-expiry").value,
-            cardCVC: document.getElementById("card-cvc").value,
-          };
-        } else if (paymentMethod === "bank") {
-          paymentDetails = {
-            bankAccount: document.getElementById("bank-account").value,
-            bankName: document.getElementById("bank-name").value,
-          };
-        } else if (paymentMethod === "transfer") {
-          paymentDetails = {
-            transferAccount: document.getElementById("transfer-account").value,
-            transferBank: document.getElementById("transfer-bank").value,
-          };
-        }
-
         const orderData = {
-          userId: userId, // UserId của người dùng
-          address: address, // Địa chỉ
-          paymentMethod: paymentMethod, // Phương thức thanh toán
-          paymentDetails: paymentDetails, // Thông tin bổ sung
-          orderItems: checkoutItems, // Danh sách sản phẩm trong đơn hàng
+          UserId: userId, // UserId của người dùng
+          Address: address, // Địa chỉ
+          PaymentMethod: paymentMethod, // Phương thức thanh toán
+          OrderItems: checkoutItems, // Danh sách sản phẩm trong đơn hàng
         };
 
         console.log("Đơn hàng:", orderData);
@@ -336,31 +284,9 @@
           Quantity: item.quantity,
         }));
 
-        try {
-          const response = await fetch(
-            "http://localhost:5178/orderitem/Insert", // Đảm bảo đây là URL chính xác
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(orderItemData),
-            }
-          );
-
-          const data = await response.json();
-          console.log("OrderItems response:", data); // Để kiểm tra phản hồi từ API
-
-          if (response.ok) {
-            alert("Mục đơn hàng đã được thêm thành công");
-          } else {
-            alert(`Lỗi: ${data.message}`);
-          }
-        } catch (error) {
-          console.error("Lỗi thêm mục đơn hàng:", error);
-          alert("Đã xảy ra lỗi khi thêm mục đơn hàng.");
-        }
+        
       }
+
       function goBack() {
         // Xóa giỏ hàng khỏi sessionStorage khi quay lại
         sessionStorage.removeItem("checkoutItems");
