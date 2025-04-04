@@ -31,6 +31,14 @@
     <script>
       const API_URL = "http://localhost:5178/CartItem";
 
+      window.addEventListener("load", function () {
+        // Xóa checkoutItems mỗi khi trang cart.html được mở lại
+        sessionStorage.removeItem("checkoutItems");
+
+        // Sau khi xóa, bạn có thể tiếp tục thực hiện các thao tác khác như tải giỏ hàng
+        fetchCart(); // Hoặc gọi hàm tải giỏ hàng của bạn
+      });
+
       // 🛒 Load giỏ hàng
       async function fetchCart() {
         try {
@@ -48,6 +56,90 @@
         } catch (error) {
           console.error("Lỗi tải giỏ hàng:", error);
         }
+      }
+
+      // Lắng nghe sự kiện "Chọn tất cả"
+      document
+        .getElementById("select-all")
+        .addEventListener("change", function () {
+          // Lấy tất cả các checkbox trong giỏ hàng
+          const checkboxes = document.querySelectorAll(".cart-checkbox");
+
+          // Cập nhật trạng thái của tất cả các checkbox theo trạng thái của "Chọn tất cả"
+          checkboxes.forEach((checkbox) => {
+            checkbox.checked = this.checked;
+          });
+        });
+
+      // Lưu thông tin sản phẩm được chọn vào sessionStorage
+      function saveSelectedItemsToSession(cartItems) {
+        if (!cartItems || cartItems.length === 0) {
+          console.error("Giỏ hàng không có dữ liệu hoặc không hợp lệ.");
+          return;
+        }
+
+        const selectedItems = [];
+        // Lấy tất cả checkbox được chọn
+        document
+          .querySelectorAll(".cart-checkbox:checked")
+          .forEach((checkbox) => {
+            const bookId = checkbox.getAttribute("data-id");
+
+            // Kiểm tra nếu cartItems tồn tại và có dữ liệu
+            const cartItem = cartItems.find(
+              (item) => String(item.bookId) === bookId
+            );
+
+            if (cartItem) {
+              selectedItems.push({
+                cartId: cartItem.cartId, // Lưu cartId
+                bookId: cartItem.bookId, // Lưu bookId
+                title: cartItem.bookTitle, // Lưu title
+                price: cartItem.bookPrice, // Lưu price
+                quantity: cartItem.quantity, // Lưu quantity
+              });
+            }
+          });
+
+        // Kiểm tra có item nào được chọn không
+        if (selectedItems.length === 0) {
+          alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+          return;
+        }
+
+        // Lưu vào sessionStorage
+        sessionStorage.setItem("checkoutItems", JSON.stringify(selectedItems));
+        console.log("Thông tin checkout đã lưu vào sessionStorage");
+      }
+
+      // Function chuyển sang trang checkout
+      function goToCheckout() {
+        const cartID = sessionStorage.getItem("cartID");
+
+        if (!cartID) {
+          alert("Không tìm thấy giỏ hàng.");
+          return;
+        }
+
+        // Gọi hàm lấy giỏ hàng từ API và xử lý
+        fetch(`${API_URL}/GetList?cartID=${cartID}`)
+          .then((response) => response.json())
+          .then((cartItems) => {
+            if (!cartItems || cartItems.length === 0) {
+              alert("Giỏ hàng trống.");
+              return;
+            }
+
+            // Lưu sản phẩm đã chọn vào sessionStorage
+            saveSelectedItemsToSession(cartItems);
+
+            // Chuyển đến trang checkout
+            window.location.href = "checkout.html";
+          })
+          .catch((error) => {
+            console.error("Lỗi khi lấy giỏ hàng:", error);
+            alert("Có lỗi xảy ra khi lấy giỏ hàng.");
+          });
       }
 
       // 🔄 Cập nhật số lượng sản phẩm
@@ -107,7 +199,7 @@
         const container = document.getElementById("cart-list");
         container.innerHTML = "";
 
-        if (cartItems == null || cartItems.length === 0) {
+        if (!cartItems || cartItems.length === 0) {
           container.innerHTML = `<p class="text-gray-600">Giỏ hàng trống.</p>`;
           return;
         }
@@ -115,37 +207,50 @@
         cartItems.forEach((item) => {
           const div = document.createElement("div");
           div.className =
-            "flex items-center justify-between bg-white p-4 rounded shadow";
+            "cart-item flex items-center justify-between bg-white p-4 rounded shadow";
+          div.setAttribute("data-bookid", item.bookId);
 
           div.innerHTML = `
-        <div class="flex items-center gap-3">
-            <input type="checkbox" class="cart-checkbox" data-id="${
-              item.bookId
-            }" />
-            <div>
+            <div class="flex items-center gap-3">
+              <input type="checkbox" class="cart-checkbox" data-id="${
+                item.bookId
+              }" />
+              <div>
                 <p class="font-semibold">${item.bookTitle}</p>
                 <p class="text-sm text-gray-500">${item.bookPrice.toFixed(
                   2
                 )} VND</p>
                 <div class="flex items-center gap-2 mt-2">
-                    <button onclick="updateCart('${item.cartId}', '${
+                  <button onclick="updateCart('${item.cartId}', '${
             item.bookId
           }', ${item.quantity - 1})" class="px-2 border rounded">-</button>
-                    <span>${item.quantity}</span>
-                    <button onclick="updateCart('${item.cartId}', '${
+                  <span class="quantity">${item.quantity}</span>
+                  <button onclick="updateCart('${item.cartId}', '${
             item.bookId
           }', ${item.quantity + 1})" class="px-2 border rounded">+</button>
                 </div>
+              </div>
             </div>
-        </div>
-        <button onclick="removeCartItem('${item.cartId}', '${
+            <button onclick="removeCartItem('${item.cartId}', '${
             item.bookId
-          }')" class="text-red-500 hover:underline text-sm">Xóa</button>
-    `;
+          }')" class="text-red-500 hover:underline text-sm">
+              Xóa
+            </button>
+          `;
 
           container.appendChild(div);
         });
       }
+
+      // Lấy giỏ hàng và gán event cho nút thanh toán
+      const checkoutButton = document.querySelector(
+        'button[onclick="goToCheckout()"]'
+      );
+      checkoutButton.addEventListener("click", () => {
+        saveSelectedItemsToSession(cartItems);
+        // Chuyển sang trang thanh toán
+        window.location.href = "checkout.html";
+      });
 
       // 🔄 Load giỏ hàng khi vào trang
       fetchCart();
