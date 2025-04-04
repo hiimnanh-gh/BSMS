@@ -2,76 +2,54 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đơn hàng của tôi | Bookstore</title>
+    <title>Lịch sử đơn hàng</title>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-gray-100 text-gray-800 font-sans">
-    <script src="include-header.js"></script>
-    <div class="max-w-4xl mx-auto p-6 bg-white mt-8 rounded shadow">
-      <h1 class="text-3xl font-bold mb-6">Đơn hàng của tôi</h1>
-
-      <div id="order-list" class="space-y-4">
-        <!-- Danh sách đơn hàng sẽ được hiển thị ở đây -->
-      </div>
-
-      <div class="mt-6 text-center">
-        <a
-          href="index.html"
-          class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          Tiếp tục mua sắm
-        </a>
-      </div>
+  <body class="bg-gray-100 p-6">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-2xl font-bold mb-4">Lịch sử đơn hàng</h1>
+      <div id="order-list" class="space-y-4"></div>
     </div>
 
     <script>
-      // Hàm gọi API để lấy danh sách đơn hàng
-      async function loadOrders() {
-        const userID = sessionStorage.getItem("UserID"); // Lấy ID người dùng từ sessionStorage
-        const orderList = document.getElementById("order-list");
+      const userId = sessionStorage.getItem("UserID");
 
-        if (!userID) {
-          orderList.innerHTML =
-            "<p class='text-gray-500'>Bạn chưa đăng nhập.</p>";
-          return;
-        }
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchOrders();
+      });
 
+      async function fetchOrders() {
         try {
-          const response = await fetch(
-            `http://localhost:5178/api/order/GetOrdersByUserId/${userID}`
-          ); // Thay URL API đúng
-          const orders = await response.json();
+          const res = await fetch(
+            `http://localhost:5178/Order/GetOrdersByUserId/${userId}`
+          );
+          const data = await res.json();
 
-          if (orders.length === 0) {
-            orderList.innerHTML =
-              "<p class='text-gray-500'>Bạn chưa có đơn hàng nào.</p>";
+          const container = document.getElementById("order-list");
+          if (!data || data.length === 0) {
+            container.innerHTML = `<p class="text-gray-600">Chưa có đơn hàng nào.</p>`;
             return;
           }
 
-          orders.forEach((order, index) => {
-            const orderHtml = `
-              <div class="border p-4 rounded-lg shadow-sm">
-                <h2 class="text-xl font-semibold">Đơn hàng #${index + 1}</h2>
-                <p><strong>Người nhận:</strong> ${order.customerName}</p>
-                <p><strong>Số điện thoại:</strong> ${order.customerPhone}</p>
-                <p><strong>Địa chỉ:</strong> ${order.customerAddress}</p>
-                <p><strong>Tổng tiền:</strong> ${order.totalAmount}đ</p>
-                <p><strong>Phương thức thanh toán:</strong> ${
-                  order.paymentMethod
-                }</p>
-              </div>
-            `;
-            orderList.innerHTML += orderHtml;
+          data.forEach((order, index) => {
+            const html = `
+    <div class="border p-4 rounded-lg shadow-sm bg-white">
+      <h2 class="text-xl font-semibold">Đơn hàng #${index + 1}</h2>
+      <p><strong>Người nhận:</strong> ${order.customerName}</p>
+      <p><strong>Địa chỉ:</strong> ${order.customerAddress}</p>
+      <p><strong>Tổng tiền:</strong> ${order.totalAmount.toLocaleString()}đ</p>
+      <p><strong>Phương thức thanh toán:</strong> ${
+        order.paymentMethod ?? "Thanh toán khi nhận hàng"
+      }</p>
+    </div>
+  `;
+            container.innerHTML += html;
           });
-        } catch (error) {
-          orderList.innerHTML =
-            "<p class='text-red-500'>Đã xảy ra lỗi khi tải đơn hàng.</p>";
-          console.error("Lỗi khi gọi API:", error);
+        } catch (err) {
+          console.error("Lỗi khi lấy dữ liệu đơn hàng:", err);
+          alert("Không thể tải dữ liệu đơn hàng.");
         }
       }
-
-      document.addEventListener("DOMContentLoaded", loadOrders);
     </script>
   </body>
 </html>

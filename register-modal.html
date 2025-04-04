@@ -25,6 +25,13 @@
           required
         />
         <input
+          type="text"
+          name="address"
+          placeholder="Địa chỉ"
+          class="w-full border rounded px-4 py-2"
+          required
+        />
+        <input
           type="password"
           name="password"
           placeholder="Mật khẩu"
@@ -61,8 +68,9 @@
           e.preventDefault();
           const username = e.target.username.value.trim();
           const email = e.target.email.value.trim();
+          const address = e.target.address.value.trim();
           const password = e.target.password.value.trim();
-          const role = e.target.role.value.trim(); // Lấy giá trị role
+          const role = e.target.role.value.trim();
 
           try {
             const response = await fetch(
@@ -70,7 +78,13 @@
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, email, password, role }), // Gửi role đi
+                body: JSON.stringify({
+                  username,
+                  email,
+                  password,
+                  address,
+                  role,
+                }),
               }
             );
 

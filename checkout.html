@@ -258,7 +258,8 @@
           }
 
           if (response.ok) {
-            alert("Đặt hàng thành công");
+            // chuyển sang trang success.html
+            window.location.href = "success.html"; // Chuyển hướng đến trang thành công
             const orderID = parsedData.orderId; // Lấy orderId từ response
             await insertOrderItems(orderID, checkoutItems); // Gọi insertOrderItems với checkoutItems
           } else {
@@ -283,8 +284,6 @@
           BookId: item.bookId,
           Quantity: item.quantity,
         }));
-
-        
       }
 
       function goBack() {
