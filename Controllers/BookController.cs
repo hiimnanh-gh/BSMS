@@ -36,8 +36,9 @@ public class BookController : ControllerBase
             b.Description,
             b.Category,
             CoverImagePath = string.IsNullOrEmpty(b.CoverImagePath)
-                             ? "/uploads/default.jpg"  // Nếu không có ảnh, dùng ảnh mặc định
-                             : b.CoverImagePath
+                ? "/uploads/default.jpg"
+                : "http://localhost:5178" + b.CoverImagePath
+
         }).ToList();
 
         return Ok(books);

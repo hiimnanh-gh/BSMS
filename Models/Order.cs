@@ -29,6 +29,8 @@ public partial class Order
 
     [Column("totalAmount", TypeName = "decimal(10, 2)")]
     public decimal? TotalAmount { get; set; }
+    public string PaymentMethod { get; set; }
+
 
     [InverseProperty("Order")]
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

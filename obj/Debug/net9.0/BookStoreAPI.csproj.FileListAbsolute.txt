@@ -267,6 +267,7 @@ C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.AssemblyI
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.csproj.CoreCompileInputs.cache
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.sourcelink.json
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\scopedcss\bundle\BookStoreAPI.styles.css
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\staticwebassets.development.json
@@ -283,5 +284,5 @@ C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\refint\BookStoreAPI.dl
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.pdb
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.genruntimeconfig.cache
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\ref\BookStoreAPI.dll
-C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\BookStoreAPI.sourcelink.json
 C:\Users\daong\source\repos\BookStoreAPI\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\daong\source\repos\BookStoreAPI\bin\Debug\net9.0\Swashbuckle.AspNetCore.Annotations.dll

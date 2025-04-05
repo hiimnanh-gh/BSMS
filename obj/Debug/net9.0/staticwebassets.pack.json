@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\1646b9cb-2e3f-44a4-85f2-1431a63b275d_IMG_0001.JPG",
+      "PackagePath": "staticwebassets\\uploads\\1646b9cb-2e3f-44a4-85f2-1431a63b275d_IMG_0001.JPG"
+    },
+    {
       "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\29ec3e432fa5420ced6c7a6ffaef0285_1200_gg5.webp",
       "PackagePath": "staticwebassets\\uploads\\29ec3e432fa5420ced6c7a6ffaef0285_1200_gg5.webp"
     },
