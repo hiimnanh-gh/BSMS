@@ -1,58 +1,280 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book Management</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-white text-gray-800 font-sans">
-  <script src="include-header.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white text-gray-800 font-sans">
+    <script src="include-header.js"></script>
 
-  <main class="p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-bold">Book Management System</h1>
-      <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2">
-        <span>➕</span> Add Book
-      </button>
+    <main class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Book Management System</h1>
+        <button
+          onclick="openAddModal()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2"
+        >
+          <span>➕</span> Add Book
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200">
+          <thead class="bg-gray-100 text-left">
+            <tr>
+              <th class="py-2 px-4">Ảnh bìa</th>
+              <th class="py-2 px-4">Tên sách</th>
+              <th class="py-2 px-4">Tác giả</th>
+              <th class="py-2 px-4">Ngày xuất bản</th>
+              <th class="py-2 px-4">Thể loại</th>
+              <th class="py-2 px-4">Giá</th>
+              <th class="py-2 px-4">Kho</th>
+              <th class="py-2 px-4">Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="book-table-body" class="bg-white">
+            <!-- Render từ JS -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- Modal Thêm sách -->
+    <div
+      id="book-modal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-xl relative">
+        <button
+          onclick="closeAddModal()"
+          class="absolute top-2 right-3 text-2xl text-gray-500 hover:text-gray-700"
+        >
+          &times;
+        </button>
+        <h2 class="text-xl font-semibold mb-4">Thêm sách</h2>
+        <form id="book-form" class="grid grid-cols-1 gap-4">
+          <input
+            name="title"
+            required
+            class="border rounded px-3 py-2"
+            placeholder="Tên sách"
+          />
+          <input
+            name="author"
+            required
+            class="border rounded px-3 py-2"
+            placeholder="Tác giả"
+          />
+          <input
+            name="published"
+            required
+            class="border rounded px-3 py-2"
+            placeholder="Ngày xuất bản (dd/mm/yyyy)"
+          />
+          <input
+            name="genre"
+            required
+            class="border rounded px-3 py-2"
+            placeholder="Thể loại"
+          />
+          <textarea
+            name="description"
+            class="border rounded px-3 py-2"
+            placeholder="Mô tả"
+          ></textarea>
+          <input
+            name="image"
+            type="file"
+            accept="image/*"
+            class="border rounded px-3 py-2"
+          />
+          <button
+            type="submit"
+            class="bg-black text-white py-2 rounded hover:bg-gray-800"
+          >
+            Lưu
+          </button>
+        </form>
+      </div>
     </div>
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full border border-gray-200">
-        <thead class="bg-gray-100 text-left">
-          <tr>
-            <th class="py-2 px-4">Title</th>
-            <th class="py-2 px-4">Author</th>
-            <th class="py-2 px-4">ISBN</th>
-            <th class="py-2 px-4">Published</th>
-            <th class="py-2 px-4">Genre</th>
-            <th class="py-2 px-4">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="book-table-body" class="bg-white">
-          <!-- Sẽ render từ JS -->
-        </tbody>
-      </table>
-    </div>
-  </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchBooks();
+      });
 
-  <!-- ADD BOOK MODAL -->
-  <div id="book-modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-xl relative">
-      <button onclick="closeAddModal()" class="absolute top-2 right-3 text-2xl text-gray-500 hover:text-gray-700">&times;</button>
-      <h2 class="text-xl font-semibold mb-4">Thêm sách</h2>
-      <form id="book-form" class="grid grid-cols-1 gap-4">
-        <input name="title" required class="border rounded px-3 py-2" placeholder="Tên sách" />
-        <input name="author" required class="border rounded px-3 py-2" placeholder="Tác giả" />
-        <input name="isbn" required class="border rounded px-3 py-2" placeholder="ISBN" />
-        <input name="published" required class="border rounded px-3 py-2" placeholder="Ngày xuất bản (dd/mm/yyyy)" />
-        <input name="genre" required class="border rounded px-3 py-2" placeholder="Thể loại" />
-        <textarea name="description" class="border rounded px-3 py-2" placeholder="Mô tả"></textarea>
-        <input name="image" type="file" accept="image/*" class="border rounded px-3 py-2" />
-        <button type="submit" class="bg-black text-white py-2 rounded hover:bg-gray-800">Lưu</button>
-      </form>
-    </div>
-  </div>
+      // Fetch danh sách sách
+      async function fetchBooks() {
+        try {
+          const res = await fetch("http://localhost:5178/Book/GetList");
+          const books = await res.json();
 
-</body>
+          const tbody = document.getElementById("book-table-body");
+          tbody.innerHTML = "";
+
+          books.forEach((book) => {
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+            <td class="py-2 px-4">
+              <img src="${
+                book.coverImagePath
+              }" alt="Cover" class="w-16 h-20 object-cover rounded" />
+            </td>
+            <td class="py-2 px-4">${book.title}</td>
+            <td class="py-2 px-4">${book.author}</td>
+            <td class="py-2 px-4">${book.releaseDate ?? "-"}</td>
+            <td class="py-2 px-4">${book.category ?? "-"}</td>
+            <td class="py-2 px-4">${book.price?.toLocaleString() ?? 0}đ</td>
+            <td class="py-2 px-4">${book.stockQuantity ?? 0}</td>
+            <td class="py-2 px-4 space-x-2">
+              <button class="text-blue-600 hover:underline" onclick="openEditModal(${
+                book.id
+              })">Sửa</button>
+              <button class="text-red-600 hover:underline" onclick="deleteBook(${
+                book.id
+              })">Xóa</button>
+            </td>
+          `;
+
+            tbody.appendChild(tr);
+          });
+        } catch (error) {
+          console.error("Lỗi khi lấy danh sách sách:", error);
+          alert("Không thể tải danh sách sách.");
+        }
+      }
+
+      // Mở modal thêm sách
+      function openAddModal() {
+        document.getElementById("book-modal").classList.remove("hidden");
+        document.getElementById("book-form").reset();
+      }
+
+      // Đóng modal thêm sách
+      function closeAddModal() {
+        document.getElementById("book-modal").classList.add("hidden");
+      }
+
+      // Xử lý form thêm sách
+      document
+        .getElementById("add-book-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const form = new FormData(this); // Tạo FormData từ form
+
+          // Kiểm tra nếu có ảnh thì thêm vào FormData
+          const fileInput = document.querySelector('input[name="image"]');
+          if (fileInput.files[0]) {
+            form.append("file", fileInput.files[0]);
+          }
+
+          try {
+            // Gửi yêu cầu POST để thêm sách
+            const res = await fetch("http://localhost:5178/Book/Add", {
+              method: "POST",
+              body: form,
+            });
+
+            if (!res.ok) {
+              throw new Error("Không thể thêm sách");
+            }
+
+            const data = await res.json();
+            if (data.success) {
+              alert("Sách đã được thêm thành công!");
+              location.reload(); // Reload lại trang để cập nhật danh sách sách
+            } else {
+              alert("Có lỗi xảy ra khi thêm sách.");
+            }
+          } catch (error) {
+            console.error(error);
+            alert("Có lỗi xảy ra. Vui lòng thử lại.");
+          }
+        });
+
+      // Mở modal sửa sách
+      function openEditModal(bookId) {
+        // Tải thông tin sách về từ API
+        fetch(`http://localhost:5178/Book/GetById/${bookId}`)
+          .then((res) => res.json())
+          .then((book) => {
+            document.querySelector('input[name="title"]').value = book.title;
+            document.querySelector('input[name="author"]').value = book.author;
+            document.querySelector('input[name="published"]').value =
+              book.published;
+            document.querySelector('input[name="genre"]').value = book.genre;
+            document.querySelector('textarea[name="description"]').value =
+              book.description;
+            document.getElementById("book-modal").classList.remove("hidden");
+          });
+      }
+
+      // Xử lý form sửa sách
+      document
+        .getElementById("book-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const bookData = {
+            title: formData.get("title"),
+            author: formData.get("author"),
+            published: formData.get("published"),
+            genre: formData.get("genre"),
+            description: formData.get("description"),
+          };
+
+          try {
+            const response = await fetch(`http://localhost:5178/Book/Update`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(bookData),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+              alert("Sách đã được cập nhật thành công!");
+              location.reload(); // Reload lại để cập nhật danh sách
+            } else {
+              alert("Có lỗi xảy ra khi cập nhật sách.");
+            }
+          } catch (error) {
+            console.error("Lỗi khi cập nhật sách:", error);
+            alert("Không thể cập nhật sách.");
+          }
+        });
+
+      // Xóa sách
+      async function deleteBook(bookId) {
+        const confirmDelete = confirm("Bạn có chắc chắn muốn xóa sách này?");
+        if (!confirmDelete) return;
+
+        try {
+          const response = await fetch(
+            `http://localhost:5178/Book/Remove/${bookId}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          const data = await response.json();
+          if (data.success) {
+            alert("Sách đã được xóa thành công!");
+            location.reload(); // Reload lại để cập nhật danh sách
+          } else {
+            alert("Có lỗi xảy ra khi xóa sách.");
+          }
+        } catch (error) {
+          console.error("Lỗi khi xóa sách:", error);
+          alert("Không thể xóa sách.");
+        }
+      }
+    </script>
+  </body>
 </html>

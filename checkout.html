@@ -60,7 +60,7 @@
         </button>
       </div>
 
-      <!-- Phương thức thanh toán -->
+      <!-- Chọn phương thức thanh toán -->
       <div class="mb-6">
         <label class="block mb-2 font-medium"
           >Chọn phương thức thanh toán:</label
@@ -85,8 +85,8 @@
         </div>
       </div>
 
-      <!-- Thông tin thanh toán bổ sung -->
-      <div id="payment-details" class="mb-6 hidden">
+      <!-- Thông tin chi tiết phương thức thanh toán -->
+      <div id="payment-details" class="mb-6 hidden"></div>
         <!-- nội dung động -->
       </div>
 
@@ -118,6 +118,37 @@
         loadCheckoutItems();
       });
 
+
+        // Gọi khi trang tải xong
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('input[name="payment"]').forEach((input) => {
+          input.addEventListener("change", updatePaymentFields);
+        });
+        updatePaymentFields(); // chạy lần đầu
+      });
+      
+
+      function updatePaymentFields() {
+        const selected = document.querySelector('input[name="payment"]:checked').value;
+        const container = document.getElementById("payment-details");
+        container.innerHTML = "";
+        container.classList.remove("hidden");
+
+        if (selected === "credit" || selected === "bank") {
+          container.innerHTML = `
+            <input type="text" placeholder="Tên chủ thẻ" class="w-full border px-4 py-2 rounded mb-3" />
+            <input type="text" placeholder="Số thẻ" class="w-full border px-4 py-2 rounded mb-3" />
+            <input type="text" placeholder="Ngày hết hạn (MM/YY)" class="w-full border px-4 py-2 rounded mb-3" />
+          `;
+        } else if (selected === "transfer") {
+          container.innerHTML = `
+            <p class="text-sm mb-2 text-gray-700">Quét mã QR để chuyển khoản:</p>
+            <img src="QR.jpg" alt="QR Code" class="w-40 h-40 object-contain" />
+          `;
+        } else {
+          container.classList.add("hidden"); // COD thì ẩn luôn
+        }
+      }
       function loadCheckoutItems() {
         const checkoutItems =
           JSON.parse(sessionStorage.getItem("checkoutItems")) || [];
@@ -189,10 +220,18 @@
         }
       }
 
+      const selectedPayment = document.querySelector(
+        'input[name="payment"]:checked'
+      ).value;
+      const paymentDetails = document.getElementById("payment-details");
+      const paymentMethods = document.querySelectorAll('input[name="payment"]');
+
       // Gửi đơn hàng
       function submitOrder() {
         const name = document.getElementById("customer-name").value.trim();
         const phone = document.getElementById("customer-phone").value.trim();
+        const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+
         const address = document
           .getElementById("customer-address")
           .value.trim();
@@ -215,6 +254,7 @@
         const orderData = {
           UserId: userId, // UserId của người dùng
           Address: address, // Địa chỉ
+          paymentMethod: selectedPayment, // Phương thức thanh toán
           PaymentMethod: paymentMethod, // Phương thức thanh toán
           OrderItems: checkoutItems, // Danh sách sản phẩm trong đơn hàng
         };
