@@ -54,41 +54,108 @@
           &times;
         </button>
         <h2 class="text-xl font-semibold mb-4">Thêm sách</h2>
-        <form id="book-form" class="grid grid-cols-1 gap-4">
+        <form
+          id="book-form"
+          class="grid grid-cols-1 gap-4"
+          enctype="multipart/form-data"
+        >
           <input
             name="title"
             required
             class="border rounded px-3 py-2"
             placeholder="Tên sách"
           />
+
           <input
             name="author"
             required
             class="border rounded px-3 py-2"
             placeholder="Tác giả"
           />
+
           <input
             name="published"
             required
+            type="date"
             class="border rounded px-3 py-2"
-            placeholder="Ngày xuất bản (dd/mm/yyyy)"
+            placeholder="Ngày xuất bản"
           />
+
           <input
-            name="genre"
+            name="price"
             required
+            type="number"
             class="border rounded px-3 py-2"
-            placeholder="Thể loại"
+            placeholder="Giá"
           />
+
+          <input
+            name="stockQuantity"
+            required
+            type="number"
+            class="border rounded px-3 py-2"
+            placeholder="Số lượng trong kho"
+          />
+
           <textarea
             name="description"
             class="border rounded px-3 py-2"
             placeholder="Mô tả"
           ></textarea>
+
           <input
-            name="image"
+            name="category"
+            required
+            class="border rounded px-3 py-2"
+            placeholder="Thể loại"
+          />
+
+          <input
+            name="coverImage"
             type="file"
             accept="image/*"
             class="border rounded px-3 py-2"
+          />
+
+          <button
+            type="submit"
+            class="bg-black text-white py-2 rounded hover:bg-gray-800"
+          >
+            Lưu
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Sửa sách -->
+    <div
+      id="edit-book-modal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-xl relative">
+        <button
+          onclick="closeEditModal()"
+          class="absolute top-2 right-3 text-2xl text-gray-500 hover:text-gray-700"
+        >
+          &times;
+        </button>
+        <h2 class="text-xl font-semibold mb-4">Sửa sách</h2>
+        <form id="edit-book-form" class="grid grid-cols-1 gap-4">
+          <input
+            id="edit-price"
+            name="price"
+            type="number"
+            required
+            class="border rounded px-3 py-2"
+            placeholder="Giá"
+          />
+          <input
+            id="edit-stock"
+            name="stockQuantity"
+            type="number"
+            required
+            class="border rounded px-3 py-2"
+            placeholder="Số lượng"
           />
           <button
             type="submit"
@@ -111,17 +178,22 @@
           const res = await fetch("http://localhost:5178/Book/GetList");
           const books = await res.json();
 
+          console.log(books);
           const tbody = document.getElementById("book-table-body");
           tbody.innerHTML = "";
 
           books.forEach((book) => {
             const tr = document.createElement("tr");
+            console.log(book.id); // Kiểm tra giá trị book.id ở đây
+
+            // Nếu book.coverImagePath có giá trị, sử dụng đường dẫn đầy đủ
+            const imageUrl = book.coverImagePath
+              ? `http://localhost:5178${book.coverImagePath}`
+              : "/uploads/default.jpg"; // Ảnh mặc định
 
             tr.innerHTML = `
             <td class="py-2 px-4">
-              <img src="${
-                book.coverImagePath
-              }" alt="Cover" class="w-16 h-20 object-cover rounded" />
+                <img src="${imageUrl}" alt="Cover" class="w-16 h-20 object-cover rounded" />
             </td>
             <td class="py-2 px-4">${book.title}</td>
             <td class="py-2 px-4">${book.author}</td>
@@ -130,14 +202,15 @@
             <td class="py-2 px-4">${book.price?.toLocaleString() ?? 0}đ</td>
             <td class="py-2 px-4">${book.stockQuantity ?? 0}</td>
             <td class="py-2 px-4 space-x-2">
-              <button class="text-blue-600 hover:underline" onclick="openEditModal(${
-                book.id
-              })">Sửa</button>
-              <button class="text-red-600 hover:underline" onclick="deleteBook(${
-                book.id
-              })">Xóa</button>
+                <button onclick="openEditModal(event)" data-id="${
+                  book.bookId
+                }">Edit</button>
+                <button class="text-red-600 hover:underline" onclick="deleteBook(event)" data-id="${
+                  book.bookId
+                }">Xóa</button>
             </td>
-          `;
+
+            `;
 
             tbody.appendChild(tr);
           });
@@ -158,121 +231,144 @@
         document.getElementById("book-modal").classList.add("hidden");
       }
 
-      // Xử lý form thêm sách
-      document
-        .getElementById("add-book-form")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-
-          const form = new FormData(this); // Tạo FormData từ form
-
-          // Kiểm tra nếu có ảnh thì thêm vào FormData
-          const fileInput = document.querySelector('input[name="image"]');
-          if (fileInput.files[0]) {
-            form.append("file", fileInput.files[0]);
-          }
-
-          try {
-            // Gửi yêu cầu POST để thêm sách
-            const res = await fetch("http://localhost:5178/Book/Add", {
-              method: "POST",
-              body: form,
-            });
-
-            if (!res.ok) {
-              throw new Error("Không thể thêm sách");
-            }
-
-            const data = await res.json();
-            if (data.success) {
-              alert("Sách đã được thêm thành công!");
-              location.reload(); // Reload lại trang để cập nhật danh sách sách
-            } else {
-              alert("Có lỗi xảy ra khi thêm sách.");
-            }
-          } catch (error) {
-            console.error(error);
-            alert("Có lỗi xảy ra. Vui lòng thử lại.");
-          }
-        });
-
-      // Mở modal sửa sách
-      function openEditModal(bookId) {
-        // Tải thông tin sách về từ API
-        fetch(`http://localhost:5178/Book/GetById/${bookId}`)
-          .then((res) => res.json())
-          .then((book) => {
-            document.querySelector('input[name="title"]').value = book.title;
-            document.querySelector('input[name="author"]').value = book.author;
-            document.querySelector('input[name="published"]').value =
-              book.published;
-            document.querySelector('input[name="genre"]').value = book.genre;
-            document.querySelector('textarea[name="description"]').value =
-              book.description;
-            document.getElementById("book-modal").classList.remove("hidden");
-          });
-      }
-
-      // Xử lý form sửa sách
       document
         .getElementById("book-form")
         .addEventListener("submit", async function (e) {
           e.preventDefault();
 
           const formData = new FormData(this);
-          const bookData = {
-            title: formData.get("title"),
-            author: formData.get("author"),
-            published: formData.get("published"),
-            genre: formData.get("genre"),
-            description: formData.get("description"),
-          };
+
+          // Log dữ liệu FormData để kiểm tra
+          for (let [key, value] of formData.entries()) {
+            console.log(key, value); // Kiểm tra tất cả các cặp key-value trong FormData
+          }
 
           try {
-            const response = await fetch(`http://localhost:5178/Book/Update`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(bookData),
+            const response = await fetch("http://localhost:5178/Book/AddBook", {
+              method: "POST",
+              body: formData,
             });
 
-            const data = await response.json();
-            if (data.success) {
-              alert("Sách đã được cập nhật thành công!");
-              location.reload(); // Reload lại để cập nhật danh sách
+            const result = await response.json();
+            if (response.ok) {
+              alert(result.message);
+              closeAddModal();
+              fetchBooks();
             } else {
-              alert("Có lỗi xảy ra khi cập nhật sách.");
+              alert("Lỗi khi thêm sách.");
+              console.log("Error:", result); // In ra lỗi chi tiết từ backend
             }
           } catch (error) {
-            console.error("Lỗi khi cập nhật sách:", error);
-            alert("Không thể cập nhật sách.");
+            console.error("Lỗi khi thêm sách:", error);
+            alert("Lỗi khi thêm sách.");
           }
         });
 
-      // Xóa sách
-      async function deleteBook(bookId) {
-        const confirmDelete = confirm("Bạn có chắc chắn muốn xóa sách này?");
-        if (!confirmDelete) return;
+      // sửa sách//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // Mở modal sửa sách và điền thông tin sách vào form
+      // Mở modal sửa sách và điền thông tin sách vào form
+      async function openEditModal(e) {
+        const bookId = e.target.closest("button").dataset.id;
+        console.log(bookId); // Debug bookId
+
+        if (!bookId) {
+          console.error("Không tìm thấy bookId!");
+          alert("Có lỗi khi lấy thông tin sách.");
+          return;
+        }
 
         try {
-          const response = await fetch(
-            `http://localhost:5178/Book/Remove/${bookId}`,
-            {
-              method: "DELETE",
-            }
+          const res = await fetch(
+            `http://localhost:5178/Book/GetBook/${bookId}`
           );
+          const book = await res.json();
 
-          const data = await response.json();
-          if (data.success) {
-            alert("Sách đã được xóa thành công!");
-            location.reload(); // Reload lại để cập nhật danh sách
-          } else {
-            alert("Có lỗi xảy ra khi xóa sách.");
+          if (!book) {
+            throw new Error("Dữ liệu sách không hợp lệ");
           }
+
+          document.getElementById("edit-price").value = book.price;
+          document.getElementById("edit-stock").value = book.stockQuantity;
+          document.getElementById("edit-book-form").dataset.bookId = bookId;
+
+          document.getElementById("edit-book-modal").classList.remove("hidden");
         } catch (error) {
-          console.error("Lỗi khi xóa sách:", error);
-          alert("Không thể xóa sách.");
+          console.error("Lỗi khi lấy thông tin sách:", error);
+          alert(`Không thể lấy thông tin sách. Chi tiết: ${error.message}`);
+        }
+      }
+
+      // Đóng modal sửa sách
+      function closeEditModal() {
+        document.getElementById("edit-book-modal").classList.add("hidden");
+      }
+
+      // Xử lý gửi form sửa sách
+      document
+        .getElementById("edit-book-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const bookId = this.dataset.bookId; // Get bookId from the form's dataset
+
+          // Tạo đối tượng từ FormData
+          const updatedBook = {};
+          formData.forEach((value, key) => {
+            updatedBook[key] = value;
+          });
+
+          try {
+            const response = await fetch(
+              `http://localhost:5178/Book/UpdateBook/${bookId}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json", // Đảm bảo Content-Type là application/json
+                },
+                body: JSON.stringify(updatedBook), // Chuyển đối tượng thành JSON
+              }
+            );
+
+            const result = await response.json();
+            if (response.ok) {
+              alert(result.message);
+              fetchBooks(); // Giả sử đây là hàm để tải lại danh sách sách
+              closeEditModal(); // Đóng modal chỉnh sửa
+            } else {
+              alert("Lỗi khi sửa sách.");
+              console.log("Error:", result);
+            }
+          } catch (error) {
+            console.error("Lỗi khi sửa sách:", error);
+            alert("Lỗi khi sửa sách.");
+          }
+        });
+
+      async function deleteBook(event) {
+        const bookId = event.target.dataset.id; // Lấy bookId từ thuộc tính data-id của nút
+
+        if (confirm("Bạn có chắc chắn muốn xóa sách này?")) {
+          try {
+            const response = await fetch(
+              `http://localhost:5178/Book/DeleteBook/${bookId}`,
+              {
+                method: "DELETE",
+              }
+            );
+
+            const result = await response.json();
+            if (response.ok) {
+              alert(result.message);
+              fetchBooks(); // Gọi lại API để cập nhật danh sách sách
+            } else {
+              alert("Lỗi khi xóa sách.");
+              console.log("Error:", result);
+            }
+          } catch (error) {
+            console.error("Lỗi khi xóa sách:", error);
+            alert("Lỗi khi xóa sách.");
+          }
         }
       }
     </script>

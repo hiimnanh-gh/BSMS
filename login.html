@@ -53,6 +53,7 @@
           e.preventDefault();
           const username = e.target.username.value.trim();
           const password = e.target.password.value.trim();
+           // Lấy giá trị role từ form
 
           try {
             const response = await fetch("http://localhost:5178/User/login", {
@@ -70,6 +71,7 @@
             }
 
             // Lưu thông tin user vào sessionStorage
+            sessionStorage.setItem("role", data.role); // Lưu role vào sessionStorage
             sessionStorage.setItem("UserID", data.userId);
             sessionStorage.setItem("UserName", data.username);
             getCartID(); // Gọi hàm tạo giỏ hàng sau khi đăng nhập thành công

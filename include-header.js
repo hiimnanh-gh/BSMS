@@ -18,16 +18,37 @@ document.addEventListener("DOMContentLoaded", () => {
     </header>
 
     <!-- NAVBAR -->
-    <nav class="flex gap-6 px-6 py-3 border-b bg-gray-100">
+    <nav class="flex gap-6 px-6 py-3 border-b bg-gray-100" id="navbar">
       <a href="index.html" class="hover:underline">Home</a>
       <a href="book.html" class="hover:underline">Books</a>
-      <a href="book-management.html" class="hover:underline">Book Management</a>
-      <a href="orders.html" class="hover:underline">Orders</a>
+      <!-- Book Management và Orders sẽ được thêm hoặc ẩn dựa trên vai trò -->
     </nav>
   `;
 
+  // Insert the header and navbar into the body
   document.body.insertAdjacentHTML("afterbegin", headerHTML);
 
+  // Phân quyền và render navbar
+  const role = sessionStorage.getItem("role"); // Lấy vai trò người dùng từ sessionStorage
+  const navbar = document.getElementById("navbar");
+
+  if (role === "admin") {
+    // Nếu là admin, hiển thị Book Management
+    const bookManagementLink = document.createElement("a");
+    bookManagementLink.href = "book-management.html";
+    bookManagementLink.classList.add("hover:underline");
+    bookManagementLink.textContent = "Book Management";
+    navbar.appendChild(bookManagementLink);
+  } else if (role === "customer") {
+    // Nếu là customer, hiển thị Orders
+    const ordersLink = document.createElement("a");
+    ordersLink.href = "orders.html";
+    ordersLink.classList.add("hover:underline");
+    ordersLink.textContent = "Orders";
+    navbar.appendChild(ordersLink);
+  }
+
+  // Render các nút Auth
   renderAuthButtons();
   updateCartCount();
 });
