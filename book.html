@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sách | Bookstore</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
@@ -42,6 +46,33 @@
             >Đăng ký</a
           >
         </div>
+
+        <!-- modal chi tiết sách -->
+        <!-- Modal chi tiết sách -->
+        <div
+          id="bookModal"
+          class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50"
+        >
+          <div class="bg-white p-6 rounded shadow-lg w-full max-w-md relative">
+            <button
+              onclick="closeModal()"
+              class="absolute top-2 right-2 text-red-500 text-lg font-bold"
+            >
+              ×
+            </button>
+            <img
+              id="book-cover"
+              class="w-full h-64 object-cover mb-4 rounded"
+            />
+            <h2 id="book-title" class="text-xl font-bold mb-2"></h2>
+            <p><strong>Tác giả:</strong> <span id="book-author"></span></p>
+            <p><strong>Giá:</strong> <span id="book-price"></span></p>
+            <p><strong>Thể loại:</strong> <span id="book-category"></span></p>
+            <p class="mt-2"><strong>Mô tả:</strong></p>
+            <p id="book-description" class="text-gray-700"></p>
+          </div>
+        </div>
+
         <button
           onclick="closeLoginWarning()"
           class="text-sm text-gray-500 mt-4 hover:underline"
@@ -139,11 +170,23 @@
           <p class="text-gray-800 font-bold mt-1">Giá: ${Number(
             book.price || 0
           ).toLocaleString("vi-VN")}đ</p>
-          <button class="add-to-cart mt-3 w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition" data-id="${
-            book.bookId
-          }">
+
+        <div class="flex justify-between items-center mt-4">
+          <button
+            onclick="getBookDetails('${book.bookId}')"
+            class="bg-blue-500 text-white font-medium text-lg py-2 px-4 rounded-md border border-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+          >
+            View Details
+          </button>
+
+          <button
+            class="add-to-cart bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition"
+            data-id="${book.bookId}"
+          >
             Thêm vào giỏ hàng
           </button>
+        </div>
+
         `;
           container.appendChild(div);
         });
@@ -265,6 +308,15 @@
       // Đóng modal cảnh báo chưa đăng nhập
       function closeLoginWarning() {
         document.getElementById("login-warning-modal").classList.add("hidden");
+      }
+
+      // Show book details
+      function getBookDetails(bookId) {
+        // Lưu bookId vào sessionStorage
+        sessionStorage.setItem("bookId", bookId);
+
+        // Chuyển hướng đến trang chi tiết sách
+        window.location.href = "book-detail.html";
       }
     </script>
   </body>
