@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\24f4bd9f-4037-4dff-b452-52dfb105bd7f_IMG_0054.JPG",
+      "PackagePath": "staticwebassets\\uploads\\24f4bd9f-4037-4dff-b452-52dfb105bd7f_IMG_0054.JPG"
+    },
+    {
       "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\29ec3e432fa5420ced6c7a6ffaef0285_1200_gg5.webp",
       "PackagePath": "staticwebassets\\uploads\\29ec3e432fa5420ced6c7a6ffaef0285_1200_gg5.webp"
     },
@@ -9,16 +13,36 @@
       "PackagePath": "staticwebassets\\uploads\\6d507e06-299a-4be9-9225-32fc51b4e21d_gg.jpg"
     },
     {
+      "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\7ba08e21-149d-47dd-828e-30585ca24b43_IMG_0176.JPG",
+      "PackagePath": "staticwebassets\\uploads\\7ba08e21-149d-47dd-828e-30585ca24b43_IMG_0176.JPG"
+    },
+    {
       "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\9399ca58-783a-46b4-82e5-22e61c47a16e_gg4.jpg",
       "PackagePath": "staticwebassets\\uploads\\9399ca58-783a-46b4-82e5-22e61c47a16e_gg4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\a111bc44-a8b0-474a-9ac9-31162536d2b7_IMG_0011.JPG",
+      "PackagePath": "staticwebassets\\uploads\\a111bc44-a8b0-474a-9ac9-31162536d2b7_IMG_0011.JPG"
     },
     {
       "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\bd95282d-02ab-4cfb-85b5-3ffaf0dd7490_gg3.jpg",
       "PackagePath": "staticwebassets\\uploads\\bd95282d-02ab-4cfb-85b5-3ffaf0dd7490_gg3.jpg"
     },
     {
+      "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\d9468eb5-2820-452f-bc92-556e38aadcd4_IMG_0030.JPG",
+      "PackagePath": "staticwebassets\\uploads\\d9468eb5-2820-452f-bc92-556e38aadcd4_IMG_0030.JPG"
+    },
+    {
       "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\default.jpg",
       "PackagePath": "staticwebassets\\uploads\\default.jpg"
+    },
+    {
+      "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\e6cda3aa-0adf-4732-84c9-937a1bd700ef_IMG_0127.JPG",
+      "PackagePath": "staticwebassets\\uploads\\e6cda3aa-0adf-4732-84c9-937a1bd700ef_IMG_0127.JPG"
+    },
+    {
+      "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\ee6a5c49-0bf4-4b28-b7ef-b43157e5f9ff_IMG_0015.JPG",
+      "PackagePath": "staticwebassets\\uploads\\ee6a5c49-0bf4-4b28-b7ef-b43157e5f9ff_IMG_0015.JPG"
     },
     {
       "Id": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\wwwroot\\uploads\\f29d70e3-4a87-4dff-82aa-8d3d599cf4c4_gg2.jpg",

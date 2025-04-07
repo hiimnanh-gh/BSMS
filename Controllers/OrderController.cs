@@ -1,4 +1,5 @@
-﻿using BookStoreAPI.Models;
+﻿using System.IdentityModel.Tokens.Jwt;
+using BookStoreAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -101,6 +102,7 @@ namespace BookStoreAPI.Controllers
                 OrderDate = DateTime.UtcNow,
                 Status = "Pending",
                 TotalAmount = totalAmount,
+                PaymentMethod = orderRequest.PaymentMethod?.Trim()
             };
 
             dbc.Orders.Add(order);
@@ -167,7 +169,8 @@ namespace BookStoreAPI.Controllers
                 customerAddress = order.User.Address,  // Địa chỉ người dùng
                 orderDate = order.OrderDate,  // Ngày đặt hàng
                 status = order.Status,  // Trạng thái đơn hàng
-                totalAmount = order.TotalAmount,  // Tổng số tiền
+                totalAmount = order.TotalAmount,
+                PaymentMethod = order.PaymentMethod,// Tổng số tiền
                 items = order.OrderItems.Select(oi => new  // Lấy thông tin sách từ OrderItems
                 {
                     bookTitle = oi.Book.Title,  // Tên sách

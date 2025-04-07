@@ -34,7 +34,7 @@ public class UserController : ControllerBase
         var user = await _context.Users
             .Where(u => u.Username == loginRequest.Username)
             .FirstOrDefaultAsync();
-
+        var role = user.Role;
         if (user == null)
         {
             return Unauthorized(new { message = "Tên đăng nhập không tồn tại!" });
@@ -51,7 +51,8 @@ public class UserController : ControllerBase
         {
             userId = user.UserId,
             username = user.Username,
-            message = "Đăng nhập thành công!"
+            role = user.Role,
+        message = "Đăng nhập thành công!"
         });
     }
 
