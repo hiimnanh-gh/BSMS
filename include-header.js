@@ -129,11 +129,69 @@ function logout() {
 }
 
 // -------------------------
+// 🛒 Lấy dữ liệu giỏ hàng từ API
+async function acb() { 
+  try {
+    const cartID = sessionStorage.getItem("cartID");
+
+    const response = await fetch(`${API_URL}/GetList?cartID=${cartID}`);
+
+    if (!response.ok) throw new Error("Không thể lấy giỏ hàng");
+
+    const cartItems = await response.json();
+
+    // Lọc chỉ lấy tên sách và số lượng
+    const cartSummary = cartItems.map((item) => ({
+      bookTitle: item.bookTitle,
+      quantity: item.quantity,
+    }));
+
+    console.log("Giỏ hàng (Chỉ tên sách và số lượng):", cartSummary); // Debug kiểm tra
+    renderCart(cartSummary); // Gọi hàm renderCart với dữ liệu đã lọc
+  } catch (error) {
+    console.error("Lỗi tải giỏ hàng:", error);
+  }
+}
+
+// 🎨 Render giỏ hàng chỉ với tên sách và số lượng
+function renderCart(cartItems) {
+  const container = document.getElementById("cart-list");
+  container.innerHTML = "";
+
+  if (!cartItems || cartItems.length === 0) {
+    container.innerHTML = `<p class="text-gray-600">Giỏ hàng trống.</p>`;
+    return;
+  }
+
+  cartItems.forEach((item) => {
+    const div = document.createElement("div");
+    div.className =
+      "cart-item flex items-center justify-between bg-white p-4 rounded shadow";
+
+    div.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div>
+          <p class="font-semibold">${item.bookTitle}</p>
+          <p class="text-sm text-gray-500">Số lượng: ${item.quantity}</p>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
 // 🔁 Hiển thị số lượng + nội dung giỏ hàng
 function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  const badge = document.getElementById("cart-count");
-  if (badge) badge.textContent = cart.length;
+  const cartID = sessionStorage.getItem("cartID");
+
+  fetch(`${API_URL}/GetList?cartID=${cartID}`)
+    .then((response) => response.json())
+    .then((cartItems) => {
+      const badge = document.getElementById("cart-count");
+      if (badge) badge.textContent = cartItems.length;
+    })
+    .catch((error) => console.error("Lỗi cập nhật số lượng giỏ hàng:", error));
 }
 
 // 🎯 Preview giỏ hàng mỗi khi hover
@@ -142,14 +200,25 @@ function setupCartPreview() {
   if (!previewContainer) return;
 
   const render = () => {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    if (cart.length === 0) {
-      previewContainer.innerHTML = `<p class="text-gray-500 text-sm">Giỏ hàng trống.</p>`;
-    } else {
-      previewContainer.innerHTML = cart
-        .map((item, i) => `<div class="mb-1">📘 ${item.title}</div>`)
-        .join("");
-    }
+    const cartID = sessionStorage.getItem("cartID");
+
+    fetch(`${API_URL}/GetList?cartID=${cartID}`)
+      .then((response) => response.json())
+      .then((cartItems) => {
+        if (cartItems.length === 0) {
+          previewContainer.innerHTML = `<p class="text-gray-500 text-sm">Giỏ hàng trống.</p>`;
+        } else {
+          previewContainer.innerHTML = cartItems
+            .map(
+              (item) =>
+                `<div class="mb-1">📘 ${item.bookTitle} (Số lượng: ${item.quantity})</div>`
+            )
+            .join("");
+        }
+      })
+      .catch((error) =>
+        console.error("Lỗi khi hover preview giỏ hàng:", error)
+      );
   };
 
   document.querySelector(".group")?.addEventListener("mouseenter", render);
