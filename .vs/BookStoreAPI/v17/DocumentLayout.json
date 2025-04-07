@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|c:\\users\\daong\\source\\repos\\bookstoreapi\\controllers\\cartitemcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|solutionrelative:controllers\\cartitemcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|c:\\users\\daong\\source\\repos\\bookstoreapi\\controllers\\bookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|solutionrelative:controllers\\bookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|c:\\users\\daong\\source\\repos\\bookstoreapi\\models\\dbcbookstore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|solutionrelative:models\\dbcbookstore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|c:\\users\\daong\\source\\repos\\bookstoreapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -17,10 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|c:\\users\\daong\\source\\repos\\bookstoreapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|c:\\users\\daong\\source\\repos\\bookstoreapi\\controllers\\bookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|solutionrelative:controllers\\bookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4E7C8FFD-1FCD-45F0-B1E5-D23E4F1BC148}|BookStoreAPI.csproj|c:\\users\\daong\\source\\repos\\bookstoreapi\\models\\book.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,20 +38,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "BookController.cs",
               "DocumentMoniker": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Controllers\\BookController.cs",
               "RelativeDocumentMoniker": "Controllers\\BookController.cs",
               "ToolTip": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Controllers\\BookController.cs",
               "RelativeToolTip": "Controllers\\BookController.cs",
-              "ViewState": "AgIAANIAAAAAAAAAAIA8wOoAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAK4AAAAAAAAAAAAkwLYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-07T00:07:34.398Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -73,6 +74,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "DBCBookStore.cs",
+              "DocumentMoniker": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Models\\DBCBookStore.cs",
+              "RelativeDocumentMoniker": "Models\\DBCBookStore.cs",
+              "ToolTip": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Models\\DBCBookStore.cs",
+              "RelativeToolTip": "Models\\DBCBookStore.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAA5wCIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-07T18:07:02.069Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "Controllers\\UserController.cs",
@@ -84,7 +98,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "LoginController.cs",
               "DocumentMoniker": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Controllers\\LoginController.cs",
               "RelativeDocumentMoniker": "Controllers\\LoginController.cs",
@@ -96,7 +110,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Models\\User.cs",
               "RelativeDocumentMoniker": "Models\\User.cs",
@@ -105,19 +119,6 @@
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-07T02:17:06.204Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CartItemController.cs",
-              "DocumentMoniker": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Controllers\\CartItemController.cs",
-              "RelativeDocumentMoniker": "Controllers\\CartItemController.cs",
-              "ToolTip": "C:\\Users\\daong\\source\\repos\\BookStoreAPI\\Controllers\\CartItemController.cs",
-              "RelativeToolTip": "Controllers\\CartItemController.cs",
-              "ViewState": "AgIAAGQAAAAAAAAAAAAawGsAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T01:41:29.735Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",

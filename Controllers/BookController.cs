@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BookStoreAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 [Route("[controller]")]
 [ApiController]
@@ -166,17 +167,19 @@ public class BookController : ControllerBase
 
 
 
-    [HttpGet("GetBook/{id}")]
-    public async Task<IActionResult> GetBook(string id)
-    {
-        var book = await dbc.Books.FindAsync(id);
-        if (book == null)
+        [HttpGet("GetBook/{id}")]
+        public async Task<IActionResult> GetBook(string id)
         {
-            return NotFound(new { message = "Sách không tồn tại." });
+            var book = await dbc.Books.FindAsync(id);
+            if (book == null)
+            {
+                return NotFound(new { message = "Sách không tồn tại." });
+            }
+
+            return Ok(book);  // Trả về thông tin sách
         }
 
-        return Ok(book);  // Trả về thông tin sách
-    }
+
 
 
     [HttpPut("UpdateBook/{id}")]

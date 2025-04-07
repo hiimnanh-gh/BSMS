@@ -1,0 +1,6 @@
+C:\Users\daong\source\repos\BookStoreAPI\wwwroot\uploads\24f4bd9f-4037-4dff-b452-52dfb105bd7f_IMG_0054.JPG
+C:\Users\daong\source\repos\BookStoreAPI\wwwroot\uploads\7ba08e21-149d-47dd-828e-30585ca24b43_IMG_0176.JPG
+C:\Users\daong\source\repos\BookStoreAPI\wwwroot\uploads\a111bc44-a8b0-474a-9ac9-31162536d2b7_IMG_0011.JPG
+C:\Users\daong\source\repos\BookStoreAPI\wwwroot\uploads\d9468eb5-2820-452f-bc92-556e38aadcd4_IMG_0030.JPG
+C:\Users\daong\source\repos\BookStoreAPI\wwwroot\uploads\e6cda3aa-0adf-4732-84c9-937a1bd700ef_IMG_0127.JPG
+C:\Users\daong\source\repos\BookStoreAPI\wwwroot\uploads\ee6a5c49-0bf4-4b28-b7ef-b43157e5f9ff_IMG_0015.JPG

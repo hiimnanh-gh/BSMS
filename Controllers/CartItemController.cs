@@ -1,6 +1,7 @@
 ﻿using BookStoreAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreAPI.Controllers
 {
@@ -154,6 +155,17 @@ public IActionResult GetCartItems(string cartID)
             dbc.CartItems.Remove(cartItem);
             dbc.SaveChanges();
             return Ok(new { message = "Xóa thành công" });
+        }
+
+
+        // BookController.cs
+        [HttpGet("GetBook")]
+        public async Task<IActionResult> GetBook(string id)
+        {
+            var book = await dbc.Books.FindAsync(id);
+            if (book == null) return NotFound();
+
+            return Ok(book);
         }
 
     }

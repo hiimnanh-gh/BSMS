@@ -194,6 +194,22 @@
   },
   {
     "ContainingType": "BookStoreAPI.Controllers.CartItemController",
+    "Method": "GetBook",
+    "RelativePath": "CartItem/GetBook",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BookStoreAPI.Controllers.CartItemController",
     "Method": "GetCartItems",
     "RelativePath": "CartItem/GetList",
     "HttpMethod": "GET",
