@@ -12,11 +12,10 @@
   </head>
   <body class="bg-gray-100">
     <script src="/include-header.js"></script>
+    <script src="search.js"></script>
     <div class="container mx-auto p-4">
-      <!-- Header -->
       <header class="mb-6"></header>
 
-      <!-- Book Details Section -->
       <div id="book-detail" class="bg-white p-6 rounded-lg shadow-lg">
         <div class="flex items-center">
           <img
@@ -36,12 +35,14 @@
             <p id="bookDescription" class="text-gray-700 mt-4"></p>
             <p id="bookPrice" class="text-xl font-bold text-red-600 mt-2"></p>
             <button
+              id="addToCartBtn"
               class="mt-6 w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition"
             >
               Thêm vào giỏ hàng
             </button>
           </div>
         </div>
+
         <header class="mb-6">
           <button
             onclick="window.history.back()"
@@ -54,16 +55,13 @@
     </div>
 
     <script>
-      // Lấy bookId từ sessionStorage
       const bookId = sessionStorage.getItem("bookId");
 
       if (bookId) {
-        // Gọi API để lấy thông tin sách từ backend
         fetch(`http://localhost:5178/Book/GetBook/${bookId}`)
           .then((response) => response.json())
           .then((data) => {
             if (data) {
-              // Hiển thị thông tin sách
               document.getElementById("bookTitle").textContent = data.title;
               document.getElementById("bookAuthor").textContent =
                 data.author || "Tác giả không rõ";
@@ -82,11 +80,41 @@
               document.getElementById(
                 "bookReleaseDate"
               ).textContent = `Ngày phát hành: ${releaseDateFormatted}`;
-              // Nếu có ảnh bìa
+
               const imageUrl = data.coverImagePath
                 ? `http://localhost:5178${data.coverImagePath}`
-                : "/uploads/default.jpg"; // Ảnh mặc định nếu không có
+                : "/uploads/default.jpg";
               document.getElementById("book-cover").src = imageUrl;
+
+              // Thêm sự kiện "Thêm vào giỏ hàng"
+              document
+                .getElementById("addToCartBtn")
+                .addEventListener("click", () => {
+                  const userId = sessionStorage.getItem("UserID");
+                  if (!userId) {
+                    alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+                    return;
+                  }
+
+                  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+                  const existing = cart.find((item) => item.id === data.bookId);
+
+                  if (existing) {
+                    existing.quantity += 1;
+                  } else {
+                    cart.push({
+                      id: data.bookId,
+                      title: data.title,
+                      price: data.price,
+                      quantity: 1,
+                    });
+                  }
+
+                  localStorage.setItem("cart", JSON.stringify(cart));
+                  alert("✅ Đã thêm vào giỏ hàng!");
+
+                  if (typeof updateCartCount === "function") updateCartCount();
+                });
             } else {
               alert("Sách không tồn tại.");
             }

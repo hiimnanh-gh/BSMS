@@ -38,12 +38,6 @@
           class="w-full border rounded px-4 py-2"
           required
         />
-        <!-- Thêm phần chọn Role -->
-        <select name="role" class="w-full border rounded px-4 py-2" required>
-          <option value="" disabled selected>Chọn vai trò</option>
-          <option value="customer">Khách hàng</option>
-          <option value="admin">Quản trị viên</option>
-        </select>
         <button
           type="submit"
           class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition"
@@ -68,20 +62,19 @@
           const email = e.target.email.value.trim();
           const address = e.target.address.value.trim();
           const password = e.target.password.value.trim();
-          const role = e.target.role.value.trim();
 
           try {
             const response = await fetch(
-              "http://localhost:5178/User/register",
+              "http://localhost:5178/User/regbister",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                   username,
                   email,
-                  password,
                   address,
-                  role,
+                  password,
+                  role: "customer", // gán ngầm ở client
                 }),
               }
             );

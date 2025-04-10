@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
       email: form.email.value,
       password: form.password.value,
       dob: form.dob.value,
+      role: "customer", // gán ngầm
     };
 
     try {

@@ -42,24 +42,6 @@
           required
         />
       </div>
-
-      <!-- Mã giảm giá -->
-      <div class="flex gap-4 mb-6">
-        <select id="discount-code" class="border px-4 py-2 rounded w-full">
-          <option value="">-- Chọn mã giảm giá --</option>
-          <option value="LOVEBOOK">LOVEBOOK - Giảm 15.000đ</option>
-          <option value="USAGI">USAGI - Giảm 15.000đ</option>
-          <option value="CHIIKAWA">CHIIKAWA - Giảm 15.000đ</option>
-          <option value="HACHIWARE">HACHIWARE - Giảm 15.000đ</option>
-        </select>
-        <button
-          onclick="applyDiscount()"
-          class="bg-black text-white px-4 py-2 rounded"
-        >
-          Áp dụng
-        </button>
-      </div>
-
       <!-- Chọn phương thức thanh toán -->
       <div class="mb-6">
         <label class="block mb-2 font-medium"
@@ -192,32 +174,6 @@
         });
 
         totalAmountEl.textContent = `${totalAmount.toFixed(2)} VND`;
-      }
-
-      // Áp dụng mã giảm giá
-      function applyDiscount() {
-        const discountCode = document.getElementById("discount-code").value;
-        const totalAmountEl = document.getElementById("total-amount");
-        let totalAmount = parseFloat(
-          totalAmountEl.innerText.replace(" VND", "")
-        );
-
-        const discountValues = {
-          LOVEBOOK: 15000,
-          USAGI: 15000,
-          CHIIKAWA: 15000,
-          HACHIWARE: 15000,
-        };
-
-        if (discountValues[discountCode]) {
-          totalAmount -= discountValues[discountCode];
-          totalAmountEl.innerText = `${Math.max(totalAmount, 0).toFixed(
-            2
-          )} VND`;
-          alert("Mã giảm giá áp dụng thành công!");
-        } else {
-          alert("Mã giảm giá không hợp lệ!");
-        }
       }
 
       const selectedPayment = document.querySelector(
